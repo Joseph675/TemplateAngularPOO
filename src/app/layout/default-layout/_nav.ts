@@ -188,6 +188,18 @@ export const navItems: INavData[] = [
     ]
   },
   {
+    name: 'Tables',
+    url: '/tables',
+    iconComponent: { name: 'cil-align-center' },
+    children: [
+      {
+        name: 'Usuarios',
+        url: '/tables/usu-tables',
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
+  {
     name: 'Charts',
     iconComponent: { name: 'cil-chart-pie' },
     url: '/charts'

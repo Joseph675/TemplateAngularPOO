@@ -1,0 +1,81 @@
+<c-row>
+  <c-col xs>
+    <c-card class="mb-4">
+      <c-card-body>
+        <div class="mb-3">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="facultad" class="form-label">Facultad</label>
+              <select id="facultad" class="form-select" [(ngModel)]="selectedFaculty" (change)="onFacultyChange()">
+                <option value="">Todas</option>
+                <option *ngFor="let faculty of faculties" [value]="faculty.name">{{ faculty.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="carrera" class="form-label">Carrera</label>
+              <select id="carrera" class="form-select" [(ngModel)]="selectedCarrera">
+                <option value="">Todas</option>
+                <option *ngFor="let carrera of filteredCarreras" [value]="carrera">{{ carrera }}</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
+              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario">
+                <option value="">Todos</option>
+                <option value="ESTUDIANTE">Estudiante</option>
+                <option value="PROFESOR">Profesor</option>
+                <option value="ADMINISTRADOR">Administrador</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="search" class="form-label">Buscar</label>
+              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, ID o correo">
+            </div>
+          </div>
+        </div>
+        <table
+          cTable
+          hover
+          responsive
+          striped
+          align="middle"
+          class="mb-0 border"
+        >
+          <thead class="text-nowrap text-truncate">
+          <tr>
+            <th class="bg-body-tertiary text-center ">
+              <svg cIcon name="cilPeople"></svg>
+            </th>
+            <th class="bg-body-tertiary">ID</th>
+            <th class="bg-body-tertiary">User</th>
+            <th class="bg-body-tertiary">Tipo de Usuario</th>
+            <th class="bg-body-tertiary text-center">Correo</th>
+            <th class="bg-body-tertiary">Especialidad</th>
+            <th class="bg-body-tertiary">Area</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers; trackBy: trackByFn">
+              <td class="text-center">
+                <c-avatar [size]="'md'" [src]="user.avatar" [status]="user.status"></c-avatar>
+              </td>
+              <td>
+                <div>{{ user.id_usu_uni }}</div>
+                <div>{{ user.nombre }}</div>
+                <div class="small text-body-secondary text-nowrap">
+                  <span>
+                    {{ user.facultad }} | {{ user.carrera }}  
+                  </span>
+                </div>
+              </td>
+              <td>{{ user.tipoUsuario }}</td>
+              <td class="text-center">{{ user.email }}</td>
+              <td>{{ user.especialidad }}</td>
+              <td>{{ user.area }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

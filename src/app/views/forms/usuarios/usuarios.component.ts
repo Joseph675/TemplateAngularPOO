@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DocsExampleComponent } from '@docs-components/public-api';
 import { RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective} from '@coreui/angular';
 
 interface Faculty {
@@ -14,11 +13,14 @@ interface Faculty {
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.scss'],
-  imports: [CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,DocsExampleComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
+  imports: [CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
   standalone: true})
   
 export class UsuariosComponent implements OnInit {
   myForm!: FormGroup;
+  showToast: boolean = false;
+  toastMessage: string = '';
+  toastType: 'success' | 'error' = 'success';
 
   faculties: Faculty[] = [
     {
@@ -144,13 +146,29 @@ export class UsuariosComponent implements OnInit {
       this.http.post('http://localhost:8080/api/usuarios', usuario).subscribe(
         (response) => {
           console.log('Usuario creado exitosamente:', response);
+          this.toastType = 'success';
+          this.toastMessage = 'Usuario registrado exitosamente!';
+          this.showToast = true;
+          setTimeout(() => this.showToast = false, 3000);
         },
         (error) => {
           console.error('Error al crear usuario:', error);
+          this.toastType = 'error'; // Asegurarse de que el tipo de toast sea error
+          if (error.status === 409) {
+            this.toastMessage = 'El usuario ya existe!';
+          } else {
+            this.toastMessage = 'Error al registrar el usuario!';
+          }
+          this.showToast = true;
+          setTimeout(() => this.showToast = false, 3000);
         }
       );
     } else {
       console.error('El formulario no es válido');
+      this.toastType = 'error';
+      this.toastMessage = 'El formulario no es válido!';
+      this.showToast = true;
+      setTimeout(() => this.showToast = false, 3000);
     }
   }
 }

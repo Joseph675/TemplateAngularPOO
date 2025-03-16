@@ -1,5 +1,18 @@
+<div id="toast" class="toast" [class.show]="showToast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+  <div class="toast-content">
+    <div class="toast-icon">
+      <span *ngIf="toastType === 'success'">✅</span>
+      <span *ngIf="toastType === 'error'">❌</span>
+    </div>
+    <div>
+      <strong>{{ toastType === 'success' ? 'Éxito!' : 'Error!' }}</strong>
+      <p>{{ toastMessage }}</p>
+    </div>
+    <button class="toast-close" (click)="showToast = false">✖</button>
+  </div>
+</div>
+
 <c-row>
-  
   <c-col xs="12">
     <c-card class="mb-4">
       <c-card-header ngPreserveWhitespaces>

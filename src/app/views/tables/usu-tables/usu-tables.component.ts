@@ -1,0 +1,141 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { IconDirective } from '@coreui/icons-angular';
+import {
+  CardBodyComponent,
+  CardComponent,
+  CardHeaderComponent,
+  ColComponent,
+  RowComponent,
+  AvatarComponent,
+  ProgressComponent,
+  TableModule
+} from '@coreui/angular';
+
+interface Faculty {
+  name: string;
+  carreras: string[];
+}
+
+@Component({
+  selector: 'app-usu-tables',
+  templateUrl: './usu-tables.component.html',
+  styleUrls: ['./usu-tables.component.scss'],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    FormsModule,
+    RowComponent,
+    ColComponent,
+    CardComponent,
+    CardHeaderComponent,
+    CardBodyComponent,
+    IconDirective,
+    RouterLink,
+    AvatarComponent,
+    ProgressComponent,
+    TableModule // Importar el módulo de tabla de CoreUI
+  ],
+  standalone: true
+})
+export class UsuTablesComponent implements OnInit {
+  users: any[] = [];
+  filteredUsers: any[] = [];
+  faculties: Faculty[] = [
+    {
+      name: 'Facultad de Ingeniería',
+      carreras: [
+        'Ingeniería de Sistemas',
+        'Ingeniería Civil',
+        'Ingeniería Industrial',
+        'Ingeniería Electrónica',
+        'Ingeniería Mecánica'
+      ]
+    },
+    {
+      name: 'Facultad de Derecho',
+      carreras: [
+        'Derecho',
+        'Ciencias Políticas y Relaciones Internacionales'
+      ]
+    },
+    {
+      name: 'Facultad de Ciencias de la Salud',
+      carreras: [
+        'Medicina',
+        'Enfermería',
+        'Odontología',
+        'Medicina Veterinaria'
+      ]
+    },
+    {
+      name: 'Facultad de Ciencias Económicas y Administrativas',
+      carreras: [
+        'Administración de Empresas',
+        'Contaduría Pública',
+        'Economía',
+        'Finanzas',
+        'Mercadeo'
+      ]
+    },
+    {
+      name: 'Facultad de Ciencias de la Educación y Humanidades',
+      carreras: [
+        'Pedagogía',
+        'Psicología',
+        'Trabajo Social',
+        'Comunicación Social',
+        'Historia'
+      ]
+    }
+  ];
+  filteredCarreras: string[] = [];
+  selectedFaculty: string = '';
+  selectedCarrera: string = '';
+  selectedTipoUsuario: string = '';
+  searchTerm: string = '';
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
+      (data) => {
+        this.users = data;
+        this.applyFilters();
+      },
+      (error) => {
+        console.error('Error al cargar los usuarios:', error);
+      }
+    );
+  }
+
+  onFacultyChange(): void {
+    const selectedFaculty = this.faculties.find(f => f.name === this.selectedFaculty);
+    this.filteredCarreras = selectedFaculty ? selectedFaculty.carreras : [];
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    this.filteredUsers = this.users.filter(user => {
+      const matchesFaculty = this.selectedFaculty ? user.facultad === this.selectedFaculty : true;
+      const matchesCarrera = this.selectedCarrera ? user.carrera === this.selectedCarrera : true;
+      const matchesTipoUsuario = this.selectedTipoUsuario ? user.tipoUsuario === this.selectedTipoUsuario : true;
+      const matchesSearchTerm = this.searchTerm ? 
+        user.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        user.id_usu_uni.toString().includes(this.searchTerm) ||
+        user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
+      return matchesFaculty && matchesCarrera && matchesTipoUsuario && matchesSearchTerm;
+    });
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.id_usu_uni; // o cualquier propiedad única del usuario
+  }
+}
