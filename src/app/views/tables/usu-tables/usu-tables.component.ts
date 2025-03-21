@@ -114,12 +114,12 @@ export class UsuTablesComponent implements OnInit {
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
-      idUsuUni: ['', Validators.required],
+      idUsuUni: [{ value: '', disabled: true }],
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      facultad: ['', Validators.required],
+      facultad: [{ value: '', disabled: true }],
       tipoUsuario: ['ESTUDIANTE', Validators.required],
-      carrera: ['', Validators.required],
+      carrera: [{ value: '', disabled: true }],
       especialidad: [''],
       area: [''],  
       username: ['', Validators.required],
@@ -175,6 +175,7 @@ export class UsuTablesComponent implements OnInit {
 
   openEditModal(user: any): void {
     this.selectedUser = user;
+    this.myForm.patchValue(user);
     console.log('Usuario seleccionado:',  this.selectedUser);
   }
 }

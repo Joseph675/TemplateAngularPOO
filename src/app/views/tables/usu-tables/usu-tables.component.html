@@ -95,79 +95,69 @@
   </c-col>
 </c-row>
 
-<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal">
+<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal" class="modal-lg">
   <c-modal-header>
-    <h5 cModalTitle><strong>Actualizar</strong> <small> {{ selectedUser }}</small></h5>
+    <h5 cModalTitle><strong>Actualizar:</strong> <small style="color: red;"> {{ selectedUser?.nombre }}</small></h5>
   </c-modal-header>
   <c-modal-body>
-    <form [formGroup]="myForm"  class="row g-3">
+    <div style="margin: 10px;">
+      <form [formGroup]="myForm"  class="row g-3">
 
-      <div class="col-md-6">
-        <label for="idUsuUni" class="form-label">ID Usuario</label>
-        <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni">
-      </div>
-
-      <div class="col-md-6">
-        <label for="nombre" class="form-label">Nombre Completo</label>
-        <input id="nombre" type="text" class="form-control" formControlName="nombre">
-      </div>
+        <div class="col-md-6">
+          <label for="idUsuUni" class="form-label">ID Usuario</label>
+          <input  id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni" [disabled]="true">
+        </div>
+  
+        <div class="col-md-6">
+          <label for="nombre" class="form-label">Nombre Completo</label>
+          <input id="nombre" type="text" class="form-control" formControlName="nombre" [disabled]="true">
+        </div>
+      
+        <div class="col-md-12">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" class="form-control" formControlName="email" >
+        </div>
+      
+        <div class="col-12">
+          <label for="facultad" class="form-label">Facultad</label>
+          <input type="text" class="form-control" formControlName="facultad" >
+        </div>
+      
+        <div class="col-md-6">
+          <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
+          <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario" >
+            <option value="ESTUDIANTE">Estudiante</option>
+            <option value="PROFESOR">Profesor</option>
+            <option value="ADMINISTRADOR">Administrador</option>
+          </select>
+        </div>
+      
+        <div class="col-md-6">
+          <label for="carrera" class="form-label">Carrera</label>
+          <input type="text" class="form-control" formControlName="carrera" >
+        </div>
+      
+        <div class="col-12">
+          <label for="especialidad" class="form-label">Especialidad</label>
+          <input id="especialidad" type="text" class="form-control" formControlName="especialidad" >
+        </div>
+  
+        <div class="col-12">
+          <label for="area" class="form-label">Area</label>
+          <input id="area" type="text" class="form-control" formControlName="area" >
+        </div>
+      
+        <div class="col-md-6">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" class="form-control" formControlName="username" >
+        </div>
+      
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+      </form>
+    </div>
     
-      <div class="col-md-12">
-        <label for="email" class="form-label">Email</label>
-        <input id="email" type="email" class="form-control" formControlName="email">
-      </div>
-    
-      <div class="col-12">
-        <label for="facultad" class="form-label">Facultad</label>
-        <select id="facultad" class="form-select" formControlName="facultad" >
-          <option *ngFor="let faculty of faculties" [value]="faculty.name">
-            {{ faculty.name }}
-          </option>
-        </select>
-      </div>
-    
-      <div class="col-md-6">
-        <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-        <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario">
-          <option value="ESTUDIANTE">Estudiante</option>
-          <option value="PROFESOR">Profesor</option>
-          <option value="ADMINISTRADOR">Administrador</option>
-        </select>
-      </div>
-    
-      <div class="col-md-6">
-        <label for="carrera" class="form-label">Carrera</label>
-        <select id="carrera" class="form-select" formControlName="carrera">
-          <option *ngFor="let carrera of filteredCarreras" [value]="carrera">
-            {{ carrera }}
-          </option>
-        </select>
-      </div>
-    
-      <div class="col-12">
-        <label for="especialidad" class="form-label">Especialidad</label>
-        <input id="especialidad" type="text" class="form-control" formControlName="especialidad">
-      </div>
-
-      <div class="col-12">
-        <label for="area" class="form-label">Area</label>
-        <input id="area" type="text" class="form-control" formControlName="area">
-      </div>
-    
-      <div class="col-md-6">
-        <label for="username" class="form-label">Username</label>
-        <input id="username" type="text" class="form-control" formControlName="username">
-      </div>
-    
-      <div class="col-md-6">
-        <label for="password" class="form-label">Password</label>
-        <input id="password" type="password" class="form-control" formControlName="password">
-      </div>
-    
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Registrar</button>
-      </div>
-    </form>
   </c-modal-body>
   <c-modal-footer>
     <button [cModalToggle]="verticallyCenteredModal.id" cButton color="secondary">
