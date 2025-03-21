@@ -13,14 +13,14 @@
             </div>
             <div class="col-md-3">
               <label for="carrera" class="form-label">Carrera</label>
-              <select id="carrera" class="form-select" [(ngModel)]="selectedCarrera">
+              <select id="carrera" class="form-select" [(ngModel)]="selectedCarrera" (change)="onFilterChange()">
                 <option value="">Todas</option>
                 <option *ngFor="let carrera of filteredCarreras" [value]="carrera">{{ carrera }}</option>
               </select>
             </div>
             <div class="col-md-3">
               <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario">
+              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario" (change)="onFilterChange()">
                 <option value="">Todos</option>
                 <option value="ESTUDIANTE">Estudiante</option>
                 <option value="PROFESOR">Profesor</option>
@@ -29,53 +29,150 @@
             </div>
             <div class="col-md-3">
               <label for="search" class="form-label">Buscar</label>
-              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, ID o correo">
+              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="onFilterChange()" placeholder="Buscar por nombre, ID o correo">
             </div>
           </div>
         </div>
-        <table
-          cTable
-          hover
-          responsive
-          striped
-          align="middle"
-          class="mb-0 border"
-        >
-          <thead class="text-nowrap text-truncate">
-          <tr>
-            <th class="bg-body-tertiary text-center ">
-              <svg cIcon name="cilPeople"></svg>
-            </th>
-            <th class="bg-body-tertiary">ID</th>
-            <th class="bg-body-tertiary">User</th>
-            <th class="bg-body-tertiary">Tipo de Usuario</th>
-            <th class="bg-body-tertiary text-center">Correo</th>
-            <th class="bg-body-tertiary">Especialidad</th>
-            <th class="bg-body-tertiary">Area</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of filteredUsers; trackBy: trackByFn">
-              <td class="text-center">
-                <c-avatar [size]="'md'" [src]="user.avatar" [status]="user.status"></c-avatar>
-              </td>
-              <td>
-                <div>{{ user.id_usu_uni }}</div>
-                <div>{{ user.nombre }}</div>
-                <div class="small text-body-secondary text-nowrap">
-                  <span>
-                    {{ user.facultad }} | {{ user.carrera }}  
-                  </span>
-                </div>
-              </td>
-              <td>{{ user.tipoUsuario }}</td>
-              <td class="text-center">{{ user.email }}</td>
-              <td>{{ user.especialidad }}</td>
-              <td>{{ user.area }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table
+            cTable
+            hover
+            responsive
+            striped
+            align="middle"
+            class="table table-bordered table-hover mb-0"
+          >
+            <thead class="text-nowrap text-truncate">
+              <tr>
+                <th class="bg-body-tertiary text-center ">
+                  <svg cIcon name="cilPeople"></svg>
+                </th>
+                <th class="bg-body-tertiary">ID</th>
+                <th class="bg-body-tertiary">User</th>
+                <th class="bg-body-tertiary">Tipo de Usuario</th>
+                <th class="bg-body-tertiary text-center">Correo</th>
+                <th class="bg-body-tertiary">Especialidad</th>
+                <th class="bg-body-tertiary">Area</th>
+                <th class="bg-body-tertiary">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of filteredUsers; trackBy: trackByFn">
+                <td class="text-center">
+                  <c-avatar [size]="'md'" [src]="user.avatar" [status]="user.status"></c-avatar>
+                </td>
+                <td>
+                  <div>{{ user.idUsuUni }}</div>
+                </td>
+                <td>
+                  <div>{{ user.nombre }}</div>
+                  <div class="small text-body-secondary text-nowrap">
+                    <span>
+                      {{ user.facultad }} | {{ user.carrera }}  
+                    </span>
+                  </div>
+                </td>
+                <td>{{ user.tipoUsuario }}</td>
+                <td class="text-center">{{ user.email }}</td>
+                <td>{{ user.especialidad }}</td>
+                <td>{{ user.area }}</td>
+                <td>
+                  <div class="d-flex justify-content-around">
+                    <button cButton [cModalToggle]="verticallyCenteredModal.id" color="primary" variant="outline" style="margin-right: 10px;" (click)="openEditModal(user)">
+                      <svg cIcon class="me-2" name="cil-pen" style="margin-right: 0px !important;"></svg>
+                    </button>
+                    <button cButton color="danger" variant="outline">
+                      <svg cIcon class="me-2" name="cil-trash" style="margin-right: 0px !important;"></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
+
+<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal">
+  <c-modal-header>
+    <h5 cModalTitle><strong>Actualizar</strong> <small> {{ selectedUser }}</small></h5>
+  </c-modal-header>
+  <c-modal-body>
+    <form [formGroup]="myForm"  class="row g-3">
+
+      <div class="col-md-6">
+        <label for="idUsuUni" class="form-label">ID Usuario</label>
+        <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni">
+      </div>
+
+      <div class="col-md-6">
+        <label for="nombre" class="form-label">Nombre Completo</label>
+        <input id="nombre" type="text" class="form-control" formControlName="nombre">
+      </div>
+    
+      <div class="col-md-12">
+        <label for="email" class="form-label">Email</label>
+        <input id="email" type="email" class="form-control" formControlName="email">
+      </div>
+    
+      <div class="col-12">
+        <label for="facultad" class="form-label">Facultad</label>
+        <select id="facultad" class="form-select" formControlName="facultad" >
+          <option *ngFor="let faculty of faculties" [value]="faculty.name">
+            {{ faculty.name }}
+          </option>
+        </select>
+      </div>
+    
+      <div class="col-md-6">
+        <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
+        <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario">
+          <option value="ESTUDIANTE">Estudiante</option>
+          <option value="PROFESOR">Profesor</option>
+          <option value="ADMINISTRADOR">Administrador</option>
+        </select>
+      </div>
+    
+      <div class="col-md-6">
+        <label for="carrera" class="form-label">Carrera</label>
+        <select id="carrera" class="form-select" formControlName="carrera">
+          <option *ngFor="let carrera of filteredCarreras" [value]="carrera">
+            {{ carrera }}
+          </option>
+        </select>
+      </div>
+    
+      <div class="col-12">
+        <label for="especialidad" class="form-label">Especialidad</label>
+        <input id="especialidad" type="text" class="form-control" formControlName="especialidad">
+      </div>
+
+      <div class="col-12">
+        <label for="area" class="form-label">Area</label>
+        <input id="area" type="text" class="form-control" formControlName="area">
+      </div>
+    
+      <div class="col-md-6">
+        <label for="username" class="form-label">Username</label>
+        <input id="username" type="text" class="form-control" formControlName="username">
+      </div>
+    
+      <div class="col-md-6">
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" class="form-control" formControlName="password">
+      </div>
+    
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="verticallyCenteredModal.id" cButton color="secondary">
+      Close
+    </button>
+    <button cButton color="primary">Understood</button>
+  </c-modal-footer>
+</c-modal>

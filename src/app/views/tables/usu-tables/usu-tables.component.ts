@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IconDirective } from '@coreui/icons-angular';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup} from '@angular/forms';
 import {
+  ButtonDirective,
   CardBodyComponent,
   CardComponent,
   CardHeaderComponent,
@@ -12,7 +13,13 @@ import {
   RowComponent,
   AvatarComponent,
   ProgressComponent,
-  TableModule
+  TableModule, 
+  ModalBodyComponent,
+  ModalComponent,
+  ModalFooterComponent,
+  ModalHeaderComponent,
+  ModalTitleDirective,
+  ModalToggleDirective,
 } from '@coreui/angular';
 
 interface Faculty {
@@ -25,6 +32,7 @@ interface Faculty {
   templateUrl: './usu-tables.component.html',
   styleUrls: ['./usu-tables.component.scss'],
   imports: [
+    ButtonDirective,
     CommonModule,
     HttpClientModule,
     FormsModule,
@@ -37,12 +45,17 @@ interface Faculty {
     RouterLink,
     AvatarComponent,
     ProgressComponent,
-    TableModule // Importar el módulo de tabla de CoreUI
+    TableModule,
+    ReactiveFormsModule,
+    ModalComponent, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, ModalToggleDirective
   ],
   standalone: true
 })
 export class UsuTablesComponent implements OnInit {
+  myForm!: FormGroup;
+
   users: any[] = [];
+  selectedUser: any = null;
   filteredUsers: any[] = [];
   faculties: Faculty[] = [
     {
@@ -98,7 +111,21 @@ export class UsuTablesComponent implements OnInit {
   selectedTipoUsuario: string = '';
   searchTerm: string = '';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private fb: FormBuilder) {
+    // Se incluye también el campo "area" en el formulario
+    this.myForm = this.fb.group({
+      idUsuUni: ['', Validators.required],
+      nombre: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      facultad: ['', Validators.required],
+      tipoUsuario: ['ESTUDIANTE', Validators.required],
+      carrera: ['', Validators.required],
+      especialidad: [''],
+      area: [''],  
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -122,6 +149,7 @@ export class UsuTablesComponent implements OnInit {
     this.applyFilters();
   }
 
+
   applyFilters(): void {
     this.filteredUsers = this.users.filter(user => {
       const matchesFaculty = this.selectedFaculty ? user.facultad === this.selectedFaculty : true;
@@ -129,13 +157,24 @@ export class UsuTablesComponent implements OnInit {
       const matchesTipoUsuario = this.selectedTipoUsuario ? user.tipoUsuario === this.selectedTipoUsuario : true;
       const matchesSearchTerm = this.searchTerm ? 
         user.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        user.id_usu_uni.toString().includes(this.searchTerm) ||
+        user.idUsuUni.toString().includes(this.searchTerm) ||
         user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
       return matchesFaculty && matchesCarrera && matchesTipoUsuario && matchesSearchTerm;
     });
   }
 
+  
+
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+
   trackByFn(index: number, item: any): any {
-    return item.id_usu_uni; // o cualquier propiedad única del usuario
+    return item.idUsuUni; // o cualquier propiedad única del usuario
+  }
+
+  openEditModal(user: any): void {
+    this.selectedUser = user;
+    console.log('Usuario seleccionado:',  this.selectedUser);
   }
 }
