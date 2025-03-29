@@ -19,6 +19,16 @@ export const routes: Routes = [
           title: 'Usuarios'
         }
       },
+
+      {
+        path: 'materias-form',
+        loadComponent: () => import('./materias/materias.component').then(m => m.MateriasComponent),
+        data: {
+          title: 'Materias'
+        }
+      },
+      
+
       {
         path: 'form-control',
         loadComponent: () => import('./form-controls/form-controls.component').then(m => m.FormControlsComponent),

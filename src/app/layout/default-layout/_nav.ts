@@ -146,6 +146,11 @@ export const navItems: INavData[] = [
         icon: 'nav-icon-bullet'
       },
       {
+        name: 'Materias',
+        url: '/forms/materias-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
         name: 'Form Control',
         url: '/forms/form-control',
         icon: 'nav-icon-bullet'
@@ -187,6 +192,7 @@ export const navItems: INavData[] = [
       }
     ]
   },
+  
   {
     name: 'Tables',
     url: '/tables',
@@ -199,11 +205,13 @@ export const navItems: INavData[] = [
       }
     ]
   },
+
   {
     name: 'Charts',
     iconComponent: { name: 'cil-chart-pie' },
     url: '/charts'
   },
+
   {
     name: 'Icons',
     iconComponent: { name: 'cil-star' },
