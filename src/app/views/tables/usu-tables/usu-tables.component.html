@@ -33,6 +33,9 @@
             </div>
           </div>
         </div>
+
+        <c-progress [value]="filteredUsers[1]?.idUsuUni" />
+
         <div class="table-responsive">
           <table
             cTable
@@ -55,6 +58,7 @@
                 <th class="bg-body-tertiary">Area</th>
                 <th class="bg-body-tertiary">Acciones</th>
               </tr>
+              
             </thead>
             <tbody>
               <tr *ngFor="let user of filteredUsers; trackBy: trackByFn">

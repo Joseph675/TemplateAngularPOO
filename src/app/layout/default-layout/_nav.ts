@@ -151,6 +151,12 @@ export const navItems: INavData[] = [
         icon: 'nav-icon-bullet'
       },
       {
+        name: 'Asistencias',
+        url: '/forms/asistencias-form',
+        icon: 'nav-icon-bullet'
+      },
+
+      {
         name: 'Form Control',
         url: '/forms/form-control',
         icon: 'nav-icon-bullet'

@@ -27,6 +27,14 @@ export const routes: Routes = [
           title: 'Materias'
         }
       },
+
+      {
+        path: 'asistencias-form',
+        loadComponent: () => import('./asistencias/asistencias.component').then(m => m.AsistenciasComponent),
+        data: {
+          title: 'Asistencias'
+        }
+      },
       
 
       {

@@ -16,10 +16,12 @@
   <c-col xs="12">
     <c-card class="mb-4">
       <c-card-header ngPreserveWhitespaces>
-        <strong>Formulario</strong> <small>de Me quiero ir</small>
+        <strong>Formulario</strong> <small>de Materias</small>
       </c-card-header>
       <c-card-body>
         
+
+
         <form [formGroup]="myForm" (ngSubmit)="registrar()" class="row g-3">
 
           <div class="col-md-6">
@@ -32,21 +34,41 @@
             <input id="nombre" type="text" class="form-control" formControlName="nombre">
           </div>
         
-        
+          <div class="col-md-6">
+                
+            <c-row>
+                <c-col lg="4">
+                  <c-time-picker />
+                </c-col>
+              
+                <c-col lg="4">
+                  <c-time-picker [time]="time" />
+                </c-col>
+              </c-row>
+        </div>
         
           <div class="col-12">
             <label for="facultad" class="form-label">Facultad</label>
-            <select id="facultad" class="form-select" formControlName="facultad" (change)="onFacultyChange($event)">
+            <select id="facultad" class="form-select" formControlName="facultad" >
               <option *ngFor="let faculty of faculties" [value]="faculty.name">
                 {{ faculty.name }}
               </option>
             </select>
           </div>
-        
+
+          <div class="col-12">
+            <label for="Profesor" class="form-label"> Profesor</label>
+            <select id="Profesor" class="form-select" formControlName="idUsuUni">
+              <option *ngFor="let user of users" [value]="user.idUsuUni">
+                {{ user.nombre }}
+              </option>
+            </select>
+          </div>
         
           <div class="col-12">
             <button type="submit" class="btn btn-primary">Registrar</button>
           </div>
+
         </form>
         
       </c-card-body>

@@ -32,6 +32,7 @@ interface Faculty {
   templateUrl: './usu-tables.component.html',
   styleUrls: ['./usu-tables.component.scss'],
   imports: [
+    ProgressComponent,
     ButtonDirective,
     CommonModule,
     HttpClientModule,
@@ -131,11 +132,13 @@ export class UsuTablesComponent implements OnInit {
     this.loadUsers();
   }
 
+
   loadUsers(): void {
     this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
       (data) => {
         this.users = data;
         this.applyFilters();
+
       },
       (error) => {
         console.error('Error al cargar los usuarios:', error);

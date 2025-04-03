@@ -1,0 +1,59 @@
+<div id="toast" class="toast" [class.show]="showToast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+    <div class="toast-content">
+      <div class="toast-icon">
+        <span *ngIf="toastType === 'success'">✅</span>
+        <span *ngIf="toastType === 'error'">❌</span>
+      </div>
+      <div>
+        <strong>{{ toastType === 'success' ? 'Éxito!' : 'Error!' }}</strong>
+        <p>{{ toastMessage }}</p>
+      </div>
+      <button class="toast-close" (click)="showToast = false">✖</button>
+    </div>
+  </div>
+  
+  <c-row>
+    <c-col xs="12">
+      <c-card class="mb-4">
+        <c-card-header ngPreserveWhitespaces>
+          <strong>Registro</strong> <small>de Asistencias</small>
+        </c-card-header>
+        <c-card-body>
+          
+  
+  
+          <form [formGroup]="myForm" (ngSubmit)="registrar()" class="row g-3">
+  
+           
+  
+           
+          
+          
+          
+            <div class="col-12">
+              <label for="facultad" class="form-label">Materia</label>
+              <select id="facultad" class="form-select" formControlName="facultad" >
+                <option *ngFor="let faculty of faculties" [value]="faculty.name">
+                  {{ faculty.name }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="col-12">
+                <label for="idUsuUni" class="form-label">ID Usuario</label>
+                <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni">
+              </div>
+  
+           
+          
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+  
+          </form>
+          
+        </c-card-body>
+      </c-card>
+    </c-col>
+  </c-row>
+  

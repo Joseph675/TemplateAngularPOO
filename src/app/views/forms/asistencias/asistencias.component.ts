@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {RowComponent,ColComponent,TextColorDirective,CardComponent,TimePickerComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective} from '@coreui/angular';
+import { RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective,ProgressComponent } from '@coreui/angular';
 
 interface Faculty {
   name: string;
@@ -10,21 +10,18 @@ interface Faculty {
 }
 
 @Component({
-  selector: 'app-materias',
-  templateUrl: './materias.component.html',
-  styleUrls: ['./materias.component.scss'],
-  imports: [CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,TimePickerComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
+  selector: 'app-asistencias',
+  templateUrl: './asistencias.component.html',
+  styleUrls: ['./asistencias.component.scss'],
+  imports: [ ProgressComponent, CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
   standalone: true})
   
-export class MateriasComponent implements OnInit {
+export class AsistenciasComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
 
-  time? = new Date();
-
-  users: any[] = [];
   faculties: Faculty[] = [
     {
       name: 'Facultad de Ingeniería',
@@ -74,6 +71,7 @@ export class MateriasComponent implements OnInit {
     }
   ];
 
+  filteredCarreras: string[] = [];
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
@@ -91,10 +89,55 @@ export class MateriasComponent implements OnInit {
     });
   }
 
- ngOnInit(): void {
-  this.loadUsers();
- }
+  ngOnInit(): void {
+    // Inicializa la facultad con la primera opción y carreras filtradas
+    if (this.faculties.length > 0) {
+      this.myForm.get('facultad')?.setValue(this.faculties[0].name);
+      this.filteredCarreras = this.faculties[0].carreras;
+    }
 
+    // Suscribirse a los cambios en el control "tipoUsuario"
+    this.myForm.get('tipoUsuario')?.valueChanges.subscribe(value => {
+      // Primero, se habilitan todos los controles que se van a manipular
+      this.myForm.get('carrera')?.enable();
+      this.myForm.get('especialidad')?.enable();
+      this.myForm.get('area')?.enable();
+
+      switch (value) {
+        case 'ESTUDIANTE':
+          // Si es estudiante, deshabilita "especialidad" y "area"
+          this.myForm.get('especialidad')?.disable();
+          this.myForm.get('area')?.disable();
+          break;
+        case 'PROFESOR':
+          // Si es profesor, deshabilita "carrera" y "area"
+          this.myForm.get('carrera')?.disable();
+          this.myForm.get('area')?.disable();
+          break;
+        case 'ADMINISTRADOR':
+          // Si es administrativo, deshabilita "carrera" y "especialidad"
+          this.myForm.get('carrera')?.disable();
+          this.myForm.get('especialidad')?.disable();
+          break;
+        default:
+          // Si el valor no es reconocido, no se deshabilita ninguno
+          break;
+      }
+    });
+    // Ejecutar la suscripción inicialmente para aplicar el estado con el valor por defecto.
+    this.myForm.get('tipoUsuario')?.updateValueAndValidity();
+  }
+
+  onFacultyChange(event: any): void {
+    const selectedFaculty = event.target.value;
+    const faculty = this.faculties.find(f => f.name === selectedFaculty);
+    if (faculty) {
+      this.filteredCarreras = faculty.carreras;
+      this.myForm.get('carrera')?.setValue('');
+    } else {
+      this.filteredCarreras = [];
+    }
+  }
 
   registrar(): void {
     console.log(this.myForm);
@@ -128,19 +171,4 @@ export class MateriasComponent implements OnInit {
       setTimeout(() => this.showToast = false, 3000);
     }
   }
-
-
-  loadUsers(): void {
-    this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
-      (data) => {
-        this.users = data;
-        console.log('Usuarios cargados:', this.users);
-
-      },
-      (error) => {
-        console.error('Error al cargar los usuarios:', error);
-      }
-    );
-  }
-
 }
