@@ -146,6 +146,16 @@ export const navItems: INavData[] = [
         icon: 'nav-icon-bullet'
       },
       {
+        name: 'Facultades',
+        url: '/forms/facultades-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Carreras',
+        url: '/forms/Carreras-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
         name: 'Materias',
         url: '/forms/materias-form',
         icon: 'nav-icon-bullet'

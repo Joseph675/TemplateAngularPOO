@@ -12,11 +12,20 @@ export const routes: Routes = [
         redirectTo: 'form-control',
         pathMatch: 'full'
       },
+
       {
         path: 'usuarios-form',
         loadComponent: () => import('./usuarios/usuarios.component').then(m => m.UsuariosComponent),
         data: {
           title: 'Usuarios'
+        }
+      },
+
+      {
+        path: 'facultades-form',
+        loadComponent: () => import('./facultades/facultades.component').then(m => m.FacultadesComponent),
+        data: {
+          title: 'Facultades'
         }
       },
 
