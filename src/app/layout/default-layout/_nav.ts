@@ -152,7 +152,7 @@ export const navItems: INavData[] = [
       },
       {
         name: 'Carreras',
-        url: '/forms/Carreras-form',
+        url: '/forms/carreras-form',
         icon: 'nav-icon-bullet'
       },
       {

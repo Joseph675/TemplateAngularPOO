@@ -30,6 +30,14 @@ export const routes: Routes = [
       },
 
       {
+        path: 'carreras-form',
+        loadComponent: () => import('./carreras/carreras.component').then(m => m.CarrerasComponent),
+        data: {
+          title: 'Carreras'
+        }
+      },
+
+      {
         path: 'materias-form',
         loadComponent: () => import('./materias/materias.component').then(m => m.MateriasComponent),
         data: {
