@@ -22,125 +22,34 @@ export class UsuariosComponent implements OnInit {
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
 
-  faculties: Faculty[] = [
-    {
-      name: 'Facultad de Ingeniería',
-      carreras: [
-        'Ingeniería de Sistemas',
-        'Ingeniería Civil',
-        'Ingeniería Industrial',
-        'Ingeniería Electrónica',
-        'Ingeniería Mecánica'
-      ]
-    },
-    {
-      name: 'Facultad de Derecho',
-      carreras: [
-        'Derecho',
-        'Ciencias Políticas y Relaciones Internacionales'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Salud',
-      carreras: [
-        'Medicina',
-        'Enfermería',
-        'Odontología',
-        'Medicina Veterinaria'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias Económicas y Administrativas',
-      carreras: [
-        'Administración de Empresas',
-        'Contaduría Pública',
-        'Economía',
-        'Finanzas',
-        'Mercadeo'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Educación y Humanidades',
-      carreras: [
-        'Pedagogía',
-        'Psicología',
-        'Trabajo Social',
-        'Comunicación Social',
-        'Historia'
-      ]
-    }
-  ];
-
-  filteredCarreras: string[] = [];
+  facultades: any[] = []; // Cambiado a any[] para evitar errores de tipo
+  carreras: any[] = []; // Carreras disponibles
+  filteredCarreras: any[] = []; // Carreras filtradas según la facultad seleccionada
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
+      tipo: ['', Validators.required],
       idUsuUni: ['', Validators.required],
+      cedula: ['', Validators.required],
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       facultad: ['', Validators.required],
-      tipoUsuario: ['ESTUDIANTE', Validators.required],
       carrera: ['', Validators.required],
-      especialidad: [''],
-      area: [''],  
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      especialidad: [''], // Sin validadores, es opcional
+      area: [''],         // Sin validadores, es opcional
+      passwordHash: ['', Validators.required],
+      activo: [true], // Valor predeterminado como booleano
     });
   }
 
   ngOnInit(): void {
-    // Inicializa la facultad con la primera opción y carreras filtradas
-    if (this.faculties.length > 0) {
-      this.myForm.get('facultad')?.setValue(this.faculties[0].name);
-      this.filteredCarreras = this.faculties[0].carreras;
-    }
-
-    // Suscribirse a los cambios en el control "tipoUsuario"
-    this.myForm.get('tipoUsuario')?.valueChanges.subscribe(value => {
-      // Primero, se habilitan todos los controles que se van a manipular
-      this.myForm.get('carrera')?.enable();
-      this.myForm.get('especialidad')?.enable();
-      this.myForm.get('area')?.enable();
-
-      switch (value) {
-        case 'ESTUDIANTE':
-          // Si es estudiante, deshabilita "especialidad" y "area"
-          this.myForm.get('especialidad')?.disable();
-          this.myForm.get('area')?.disable();
-          break;
-        case 'PROFESOR':
-          // Si es profesor, deshabilita "carrera" y "area"
-          this.myForm.get('carrera')?.disable();
-          this.myForm.get('area')?.disable();
-          break;
-        case 'ADMINISTRADOR':
-          // Si es administrativo, deshabilita "carrera" y "especialidad"
-          this.myForm.get('carrera')?.disable();
-          this.myForm.get('especialidad')?.disable();
-          break;
-        default:
-          // Si el valor no es reconocido, no se deshabilita ninguno
-          break;
-      }
-    });
-    // Ejecutar la suscripción inicialmente para aplicar el estado con el valor por defecto.
-    this.myForm.get('tipoUsuario')?.updateValueAndValidity();
-  }
-
-  onFacultyChange(event: any): void {
-    const selectedFaculty = event.target.value;
-    const faculty = this.faculties.find(f => f.name === selectedFaculty);
-    if (faculty) {
-      this.filteredCarreras = faculty.carreras;
-      this.myForm.get('carrera')?.setValue('');
-    } else {
-      this.filteredCarreras = [];
-    }
+    this.loadFacultades();
+    this.loadCarreras();
   }
 
   registrar(): void {
-    console.log(this.myForm);
+    console.log(this.myForm.value);
     if (this.myForm.valid) {
       const usuario = this.myForm.value;
       this.http.post('http://localhost:8080/api/usuarios', usuario).subscribe(
@@ -170,5 +79,38 @@ export class UsuariosComponent implements OnInit {
       this.showToast = true;
       setTimeout(() => this.showToast = false, 3000);
     }
+  }
+
+  loadFacultades(): void {
+    this.http.get<any[]>('http://localhost:8080/api/facultades').subscribe(
+      (data) => {
+        this.facultades = data;
+
+      },
+      (error) => {
+        console.error('Error al cargar los usuarios:', error);
+      }
+    );
+  }
+
+  loadCarreras(): void {
+    this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(
+      (data) => {
+        this.carreras = data;
+      },
+      (error) => {
+        console.error('Error al cargar las carreras:', error);
+      }
+    );
+  }
+
+  onFacultadChange(event: Event): void {
+    const selectedFacultadId = (event.target as HTMLSelectElement).value;
+  
+    console.log('Facultad seleccionada:', selectedFacultadId); // Verifica el ID de la facultad seleccionada
+    // Filtrar las carreras según la facultad seleccionada
+    this.filteredCarreras = this.carreras.filter(carrera => carrera.facultadId === parseInt(selectedFacultadId, 10));
+  
+    console.log('Carreras filtradas:', this.filteredCarreras); // Verifica las carreras filtradas
   }
 }
