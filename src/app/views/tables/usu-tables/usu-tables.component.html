@@ -8,7 +8,7 @@
               <label for="facultad" class="form-label">Facultad</label>
               <select id="facultad" class="form-select" [(ngModel)]="selectedFaculty" (change)="onFacultyChange()">
                 <option value="">Todas</option>
-                <option *ngFor="let faculty of faculties" [value]="faculty.name">{{ faculty.name }}</option>
+                <option *ngFor="let faculty of facultades" [value]="faculty.name">{{ faculty.name }}</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -29,7 +29,14 @@
             </div>
             <div class="col-md-3">
               <label for="search" class="form-label">Buscar</label>
-              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="onFilterChange()" placeholder="Buscar por nombre, ID o correo">
+              <input
+                id="search"
+                type="text"
+                class="form-control"
+                [(ngModel)]="searchTerm"
+                (input)="onFilterChange()"
+                placeholder="Buscar por nombre, ID o correo"
+              />
             </div>
           </div>
         </div>
@@ -72,7 +79,7 @@
                   <div>{{ user.nombre }}</div>
                   <div class="small text-body-secondary text-nowrap">
                     <span>
-                      {{ user.facultad }} | {{ user.carrera }}  
+                      {{ user.facultadNombre }} | {{ user.carreraNombre }}  
                     </span>
                   </div>
                 </td>

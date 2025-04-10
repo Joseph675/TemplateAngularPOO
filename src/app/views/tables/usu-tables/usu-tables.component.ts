@@ -58,55 +58,10 @@ export class UsuTablesComponent implements OnInit {
   users: any[] = [];
   selectedUser: any = null;
   filteredUsers: any[] = [];
-  faculties: Faculty[] = [
-    {
-      name: 'Facultad de Ingeniería',
-      carreras: [
-        'Ingeniería de Sistemas',
-        'Ingeniería Civil',
-        'Ingeniería Industrial',
-        'Ingeniería Electrónica',
-        'Ingeniería Mecánica'
-      ]
-    },
-    {
-      name: 'Facultad de Derecho',
-      carreras: [
-        'Derecho',
-        'Ciencias Políticas y Relaciones Internacionales'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Salud',
-      carreras: [
-        'Medicina',
-        'Enfermería',
-        'Odontología',
-        'Medicina Veterinaria'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias Económicas y Administrativas',
-      carreras: [
-        'Administración de Empresas',
-        'Contaduría Pública',
-        'Economía',
-        'Finanzas',
-        'Mercadeo'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Educación y Humanidades',
-      carreras: [
-        'Pedagogía',
-        'Psicología',
-        'Trabajo Social',
-        'Comunicación Social',
-        'Historia'
-      ]
-    }
-  ];
-  filteredCarreras: string[] = [];
+  facultades: any[] = []; // Cambiado a any[] para evitar errores de tipo
+  carreras: any[] = []; // Carreras disponibles
+  filteredCarreras: any[] = []; // Carreras filtradas según la facultad seleccionada
+
   selectedFaculty: string = '';
   selectedCarrera: string = '';
   selectedTipoUsuario: string = '';
@@ -129,16 +84,31 @@ export class UsuTablesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadUsers();
+    Promise.all([this.loadFacultades(), this.loadCarreras()]).then(() => {
+      this.loadUsers();
+    });
   }
 
 
   loadUsers(): void {
     this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
       (data) => {
-        this.users = data;
-        this.applyFilters();
-
+        console.log('Usuarios:', data);
+        console.log('Carreras:', this.carreras);
+        console.log('Facultades:', this.facultades);
+  
+        this.users = data.map(user => {
+          // Convertir los valores a números para la comparación
+          const carrera = this.carreras.find(c => +c.carreraPk === +user.carrera);
+          user.carreraNombre = carrera ? carrera.nombre : 'Carrera no encontrada';
+  
+          const facultad = this.facultades.find(f => +f.facultadId === +user.facultad);
+          user.facultadNombre = facultad ? facultad.nombre : 'Facultad no encontrada';
+  
+          return user;
+        });
+  
+        this.applyFilters(); // Inicializar la lista filtrada
       },
       (error) => {
         console.error('Error al cargar los usuarios:', error);
@@ -146,22 +116,71 @@ export class UsuTablesComponent implements OnInit {
     );
   }
 
-  onFacultyChange(): void {
-    const selectedFaculty = this.faculties.find(f => f.name === this.selectedFaculty);
-    this.filteredCarreras = selectedFaculty ? selectedFaculty.carreras : [];
-    this.applyFilters();
+  loadFacultades(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<any[]>('http://localhost:8080/api/facultades').subscribe(
+        (data) => {
+          this.facultades = data;
+          resolve();
+        },
+        (error) => {
+          console.error('Error al cargar las facultades:', error);
+          reject(error);
+        }
+      );
+    });
+  }
+  
+  loadCarreras(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(
+        (data) => {
+          this.carreras = data;
+          resolve();
+        },
+        (error) => {
+          console.error('Error al cargar las carreras:', error);
+          reject(error);
+        }
+      );
+    });
   }
 
-
+  onFacultyChange(): void {
+    // Actualizar las carreras filtradas según la facultad seleccionada
+    const selectedFaculty = this.facultades.find(f => f.name === this.selectedFaculty);
+    this.filteredCarreras = selectedFaculty ? selectedFaculty.carreras : [];
+  
+    // Aplicar los filtros
+    this.applyFilters();
+  }
+  
+  
   applyFilters(): void {
     this.filteredUsers = this.users.filter(user => {
-      const matchesFaculty = this.selectedFaculty ? user.facultad === this.selectedFaculty : true;
-      const matchesCarrera = this.selectedCarrera ? user.carrera === this.selectedCarrera : true;
-      const matchesTipoUsuario = this.selectedTipoUsuario ? user.tipoUsuario === this.selectedTipoUsuario : true;
-      const matchesSearchTerm = this.searchTerm ? 
-        user.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        user.idUsuUni.toString().includes(this.searchTerm) ||
-        user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
+      // Filtrar por facultad
+      const matchesFaculty = this.selectedFaculty
+        ? user.facultadNombre === this.selectedFaculty
+        : true;
+  
+      // Filtrar por carrera
+      const matchesCarrera = this.selectedCarrera
+        ? user.carreraNombre === this.selectedCarrera
+        : true;
+  
+      // Filtrar por tipo de usuario
+      const matchesTipoUsuario = this.selectedTipoUsuario
+        ? user.tipoUsuario === this.selectedTipoUsuario
+        : true;
+  
+      // Filtrar por término de búsqueda
+      const matchesSearchTerm = this.searchTerm
+        ? user.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          user.idUsuUni.toString().includes(this.searchTerm) ||
+          user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+        : true;
+  
+      // Retornar true si el usuario cumple con todos los filtros
       return matchesFaculty && matchesCarrera && matchesTipoUsuario && matchesSearchTerm;
     });
   }
