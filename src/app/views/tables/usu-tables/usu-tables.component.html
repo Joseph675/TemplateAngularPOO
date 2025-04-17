@@ -19,33 +19,42 @@
       <c-card-body>
         <div class="mb-3">
           <div class="row">
+            <!-- Filtro de Facultad -->
             <div class="col-md-3">
               <label for="facultad" class="form-label">Facultad</label>
               <select id="facultad" class="form-select" [(ngModel)]="selectedFaculty" (change)="onFacultyChange()">
                 <option value="">Todas</option>
-                <option *ngFor="let faculty of facultades" [value]="faculty.name">{{ faculty.name }}</option>
+                <option *ngFor="let facultad of facultades" [value]="facultad.facultadId">
+                  {{ facultad.nombre }}
+                </option>
               </select>
             </div>
+            <!-- Filtro de Carrera -->
             <div class="col-md-3">
               <label for="carrera" class="form-label">Carrera</label>
-              <select id="carrera" class="form-select" [(ngModel)]="selectedCarrera" (change)="onFilterChange()">
+              <select id="carrera" class="form-select" [(ngModel)]="selectedCarrera" (change)="applyFilters()">
                 <option value="">Todas</option>
-                <option *ngFor="let carrera of filteredCarreras" [value]="carrera">{{ carrera }}</option>
+                <option *ngFor="let carrera of filteredCarreras" [value]="carrera.carreraPk">
+                  {{ carrera.nombre }}
+                </option>
               </select>
             </div>
+            <!-- Filtro de Tipo de Usuario -->
             <div class="col-md-3">
               <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario"
-                (change)="onFilterChange()">
+              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario" (change)="applyFilters()">
                 <option value="">Todos</option>
-                <option value="ESTUDIANTE">Estudiante</option>
-                <option value="PROFESOR">Profesor</option>
-                <option value="ADMINISTRADOR">Administrador</option>
+                <option value="Alumno">Alumno</option>
+                <option value="Profesor">Profesor</option>
+                <option value="Administrativo">Administrativo</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
+
+            <!-- Campo de Búsqueda -->
             <div class="col-md-3">
               <label for="search" class="form-label">Buscar</label>
-              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="onFilterChange()"
+              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="applyFilters()"
                 placeholder="Buscar por nombre, ID o correo" />
             </div>
           </div>

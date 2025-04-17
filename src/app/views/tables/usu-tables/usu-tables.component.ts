@@ -151,9 +151,16 @@ export class UsuTablesComponent implements OnInit {
   }
 
   onFacultyChange(): void {
-    // Actualizar las carreras filtradas según la facultad seleccionada
-    const selectedFaculty = this.facultades.find(f => f.name === this.selectedFaculty);
-    this.filteredCarreras = selectedFaculty ? selectedFaculty.carreras : [];
+    // Buscar la facultad seleccionada
+    const selectedFaculty = this.facultades.find(f => f.facultadId === +this.selectedFaculty);
+
+    // Filtrar las carreras según la facultad seleccionada
+    this.filteredCarreras = selectedFaculty
+      ? this.carreras.filter(c => c.facultadId === selectedFaculty.facultadId)
+      : [];
+
+    // Limpiar el filtro de carrera si la facultad cambia
+    this.selectedCarrera = '';
 
     // Aplicar los filtros
     this.applyFilters();
@@ -164,17 +171,17 @@ export class UsuTablesComponent implements OnInit {
     this.filteredUsers = this.users.filter(user => {
       // Filtrar por facultad
       const matchesFaculty = this.selectedFaculty
-        ? user.facultadNombre === this.selectedFaculty
+        ? user.facultadId === +this.selectedFaculty
         : true;
 
       // Filtrar por carrera
       const matchesCarrera = this.selectedCarrera
-        ? user.carreraNombre === this.selectedCarrera
+        ? user.carrera === this.selectedCarrera
         : true;
 
       // Filtrar por tipo de usuario
       const matchesTipoUsuario = this.selectedTipoUsuario
-        ? user.tipoUsuario === this.selectedTipoUsuario
+        ? user.tipo === this.selectedTipoUsuario
         : true;
 
       // Filtrar por término de búsqueda
@@ -188,8 +195,6 @@ export class UsuTablesComponent implements OnInit {
       return matchesFaculty && matchesCarrera && matchesTipoUsuario && matchesSearchTerm;
     });
   }
-
-
 
   onFilterChange(): void {
     this.applyFilters();
@@ -280,7 +285,7 @@ export class UsuTablesComponent implements OnInit {
     const index = user.idUsuUni % colors.length; // Usa el ID para asignar un color
     return colors[index];
   }
-  
+
   getInitials(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '?'; // Obtiene la primera letra del nombre
   }
