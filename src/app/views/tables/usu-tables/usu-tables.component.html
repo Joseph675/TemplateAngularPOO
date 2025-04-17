@@ -41,7 +41,6 @@
           </div>
         </div>
 
-        <c-progress [value]="filteredUsers[1]?.idUsuUni" />
 
         <div class="table-responsive">
           <table
@@ -83,8 +82,18 @@
                     </span>
                   </div>
                 </td>
-                <td>{{ user.tipoUsuario }}</td>
-                <td class="text-center">{{ user.email }}</td>
+                <td> 
+                  <span 
+                  class="saber rounded text-white" 
+                  [ngClass]="{
+                    'bg-warning': user.tipo === 'Alumno',
+                    'bg-primary': user.tipo === 'Profesor',
+                    'bg-success': user.tipo === 'Administrador'
+                  }">
+                  {{ user.tipo }}
+                </span>
+                </td>
+                <td>{{ user.email }}</td>
                 <td>{{ user.especialidad }}</td>
                 <td>{{ user.area }}</td>
                 <td>

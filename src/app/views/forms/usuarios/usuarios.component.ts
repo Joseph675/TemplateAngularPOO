@@ -34,7 +34,7 @@ export class UsuariosComponent implements OnInit {
       cedula: ['', Validators.required],
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      facultad: ['', Validators.required],
+      facultadId: ['', Validators.required],
       carrera: ['', Validators.required],
       especialidad: [''], // Sin validadores, es opcional
       area: [''],         // Sin validadores, es opcional

@@ -102,7 +102,7 @@ export class UsuTablesComponent implements OnInit {
           const carrera = this.carreras.find(c => +c.carreraPk === +user.carrera);
           user.carreraNombre = carrera ? carrera.nombre : 'Carrera no encontrada';
   
-          const facultad = this.facultades.find(f => +f.facultadId === +user.facultad);
+          const facultad = this.facultades.find(f => +f.facultadId === +user.facultadId);
           user.facultadNombre = facultad ? facultad.nombre : 'Facultad no encontrada';
   
           return user;

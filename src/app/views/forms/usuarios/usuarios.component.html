@@ -25,10 +25,10 @@
           <div class="col-md-12">
             <label for="tipo" class="form-label">Tipo de Usuario</label>
             <select id="tipo" class="form-select" formControlName="tipo">
-              <option value="alumno">Estudiante</option>
-              <option value="profesor">Profesor</option>
-              <option value="administrativo">Administrativo</option>
-              <option value="admin">Admin</option>
+              <option value="Alumno">Estudiante</option>
+              <option value="Profesor">Profesor</option>
+              <option value="Administrativo">Administrativo</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
 
@@ -53,8 +53,8 @@
           </div>
         
           <div class="col-md-6">
-            <label for="facultad">Facultad</label>
-            <select id="facultad" class="form-control" formControlName="facultad" (change)="onFacultadChange($event)">
+            <label for="facultadId">Facultad</label>
+            <select id="facultadId" class="form-control" formControlName="facultadId" (change)="onFacultadChange($event)">
               <option *ngFor="let facultad of facultades" [value]="facultad.facultadId">
                 {{ facultad.nombre }}
               </option>
