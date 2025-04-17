@@ -58,16 +58,27 @@ export class UsuariosComponent implements OnInit {
           this.toastType = 'success';
           this.toastMessage = 'Usuario registrado exitosamente!';
           this.showToast = true;
+
+          this.myForm.reset({
+            tipo: '', // Valor inicial para tipo
+            idUsuUni: '', // Valor inicial para idUsuUni
+            cedula: '', // Valor inicial para cedula
+            nombre: '', // Valor inicial para nombre
+            email: '', // Valor inicial para email
+            facultadId: '', // Valor inicial para facultadId
+            carrera: '', // Valor inicial para carrera
+            especialidad: '', // Valor inicial para especialidad
+            area: '', // Valor inicial para area
+            passwordHash: '', // Valor inicial para passwordHash
+            activo: true // Valor inicial para activo
+          });
+
           setTimeout(() => this.showToast = false, 3000);
         },
         (error) => {
-          console.error('Error al crear usuario:', error);
+          console.error('Error al crear usuario:', error.error);
           this.toastType = 'error'; // Asegurarse de que el tipo de toast sea error
-          if (error.status === 409) {
-            this.toastMessage = 'El usuario ya existe!';
-          } else {
-            this.toastMessage = 'Error al registrar el usuario!';
-          }
+            this.toastMessage = error.error;
           this.showToast = true;
           setTimeout(() => this.showToast = false, 3000);
         }

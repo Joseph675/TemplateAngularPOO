@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { IconDirective } from '@coreui/icons-angular';
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import {
   ButtonDirective,
   CardBodyComponent,
@@ -13,7 +13,7 @@ import {
   RowComponent,
   AvatarComponent,
   ProgressComponent,
-  TableModule, 
+  TableModule,
   ModalBodyComponent,
   ModalComponent,
   ModalFooterComponent,
@@ -62,6 +62,10 @@ export class UsuTablesComponent implements OnInit {
   carreras: any[] = []; // Carreras disponibles
   filteredCarreras: any[] = []; // Carreras filtradas según la facultad seleccionada
 
+  showToast: boolean = false;
+  toastMessage: string = '';
+  toastType: 'success' | 'error' = 'success';
+
   selectedFaculty: string = '';
   selectedCarrera: string = '';
   selectedTipoUsuario: string = '';
@@ -77,7 +81,7 @@ export class UsuTablesComponent implements OnInit {
       tipoUsuario: ['ESTUDIANTE', Validators.required],
       carrera: [{ value: '', disabled: true }],
       especialidad: [''],
-      area: [''],  
+      area: [''],
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
@@ -96,18 +100,18 @@ export class UsuTablesComponent implements OnInit {
         console.log('Usuarios:', data);
         console.log('Carreras:', this.carreras);
         console.log('Facultades:', this.facultades);
-  
+
         this.users = data.map(user => {
           // Convertir los valores a números para la comparación
           const carrera = this.carreras.find(c => +c.carreraPk === +user.carrera);
           user.carreraNombre = carrera ? carrera.nombre : 'Carrera no encontrada';
-  
+
           const facultad = this.facultades.find(f => +f.facultadId === +user.facultadId);
           user.facultadNombre = facultad ? facultad.nombre : 'Facultad no encontrada';
-  
+
           return user;
         });
-  
+
         this.applyFilters(); // Inicializar la lista filtrada
       },
       (error) => {
@@ -130,7 +134,7 @@ export class UsuTablesComponent implements OnInit {
       );
     });
   }
-  
+
   loadCarreras(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(
@@ -150,42 +154,42 @@ export class UsuTablesComponent implements OnInit {
     // Actualizar las carreras filtradas según la facultad seleccionada
     const selectedFaculty = this.facultades.find(f => f.name === this.selectedFaculty);
     this.filteredCarreras = selectedFaculty ? selectedFaculty.carreras : [];
-  
+
     // Aplicar los filtros
     this.applyFilters();
   }
-  
-  
+
+
   applyFilters(): void {
     this.filteredUsers = this.users.filter(user => {
       // Filtrar por facultad
       const matchesFaculty = this.selectedFaculty
         ? user.facultadNombre === this.selectedFaculty
         : true;
-  
+
       // Filtrar por carrera
       const matchesCarrera = this.selectedCarrera
         ? user.carreraNombre === this.selectedCarrera
         : true;
-  
+
       // Filtrar por tipo de usuario
       const matchesTipoUsuario = this.selectedTipoUsuario
         ? user.tipoUsuario === this.selectedTipoUsuario
         : true;
-  
+
       // Filtrar por término de búsqueda
       const matchesSearchTerm = this.searchTerm
         ? user.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          user.idUsuUni.toString().includes(this.searchTerm) ||
-          user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+        user.idUsuUni.toString().includes(this.searchTerm) ||
+        user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
         : true;
-  
+
       // Retornar true si el usuario cumple con todos los filtros
       return matchesFaculty && matchesCarrera && matchesTipoUsuario && matchesSearchTerm;
     });
   }
 
-  
+
 
   onFilterChange(): void {
     this.applyFilters();
@@ -198,6 +202,86 @@ export class UsuTablesComponent implements OnInit {
   openEditModal(user: any): void {
     this.selectedUser = user;
     this.myForm.patchValue(user);
-    console.log('Usuario seleccionado:',  this.selectedUser);
+    console.log('Usuario seleccionado:', this.selectedUser);
+  }
+
+
+  EliminarUser(user: any): void {
+    console.log(user)
+    // Realizar la solicitud DELETE al backend
+    this.http.delete(`http://localhost:8080/api/usuarios/${user.idUsuario}`).subscribe(
+      () => {
+        console.log(`Usuario con ID ${user.idUsuario} eliminado exitosamente.`);
+        // Actualizar la lista de usuarios después de eliminar
+        this.users = this.users.filter(u => u.idUsuario !== user.idUsuario);
+        this.applyFilters(); // Actualizar la lista filtrada
+
+        // Mostrar mensaje de éxito
+        this.toastType = 'success';
+        this.toastMessage = 'Usuario registrado exitosamente!';
+        this.showToast = true;
+        setTimeout(() => this.showToast = false, 3000);
+
+      },
+      (error) => {
+        console.error('Error al eliminar el usuario:', error);
+        // Mostrar un mensaje de error
+        this.toastType = 'error';
+        this.toastMessage = 'Error al eliminar el usuario.';
+        this.showToast = true;
+        setTimeout(() => (this.showToast = false), 3000);
+      }
+    );
+  }
+
+  guardarCambios(): void {
+    if (this.myForm.valid) {
+      const updatedUser = this.myForm.value;
+      console.log('Usuario actualizado:', updatedUser);
+
+      // Realizar la solicitud PUT al backend
+      this.http.put(`http://localhost:8080/api/usuarios/${this.selectedUser.idUsuario}`, updatedUser).subscribe(
+        (response) => {
+          console.log('Usuario actualizado exitosamente:', response);
+          // Actualizar la lista de usuarios después de la edición
+          const index = this.users.findIndex(u => u.idUsuario === this.selectedUser.idUsuario);
+          if (index !== -1) {
+            this.users[index] = { ...this.users[index], ...updatedUser };
+          }
+          this.applyFilters(); // Actualizar la lista filtrada
+
+          // Mostrar mensaje de éxito
+          this.toastType = 'success';
+          this.toastMessage = 'Usuario actualizado exitosamente!';
+          this.showToast = true;
+          setTimeout(() => (this.showToast = false), 3000);
+
+        },
+        (error) => {
+          console.error('Error al actualizar el usuario:', error);
+          // Mostrar un mensaje de error
+          this.toastType = 'error';
+          this.toastMessage = 'Error al actualizar el usuario.';
+          this.showToast = true;
+          setTimeout(() => (this.showToast = false), 3000);
+        }
+      );
+    } else {
+      console.error('El formulario no es válido');
+      // Mostrar un mensaje de error
+      this.toastType = 'error';
+      this.toastMessage = 'El formulario no es válido!';
+      this.showToast = true;
+      setTimeout(() => (this.showToast = false), 3000);
+    }
+  }
+  getColorForUser(user: any): string {
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#F5FF33'];
+    const index = user.idUsuUni % colors.length; // Usa el ID para asignar un color
+    return colors[index];
+  }
+  
+  getInitials(name: string): string {
+    return name ? name.charAt(0).toUpperCase() : '?'; // Obtiene la primera letra del nombre
   }
 }

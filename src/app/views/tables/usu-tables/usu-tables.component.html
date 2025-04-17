@@ -1,3 +1,18 @@
+<div id="toast" class="toast" [class.show]="showToast" [class.success]="toastType === 'success'"
+  [class.error]="toastType === 'error'">
+  <div class="toast-content">
+    <div class="toast-icon">
+      <span *ngIf="toastType === 'success'">✅</span>
+      <span *ngIf="toastType === 'error'">❌</span>
+    </div>
+    <div>
+      <strong>{{ toastType === 'success' ? 'Éxito!' : 'Error!' }}</strong>
+      <p>{{ toastMessage }}</p>
+    </div>
+    <button class="toast-close" (click)="showToast = false">✖</button>
+  </div>
+</div>
+
 <c-row>
   <c-col xs>
     <c-card class="mb-4">
@@ -20,7 +35,8 @@
             </div>
             <div class="col-md-3">
               <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario" (change)="onFilterChange()">
+              <select id="tipoUsuario" class="form-select" [(ngModel)]="selectedTipoUsuario"
+                (change)="onFilterChange()">
                 <option value="">Todos</option>
                 <option value="ESTUDIANTE">Estudiante</option>
                 <option value="PROFESOR">Profesor</option>
@@ -29,28 +45,15 @@
             </div>
             <div class="col-md-3">
               <label for="search" class="form-label">Buscar</label>
-              <input
-                id="search"
-                type="text"
-                class="form-control"
-                [(ngModel)]="searchTerm"
-                (input)="onFilterChange()"
-                placeholder="Buscar por nombre, ID o correo"
-              />
+              <input id="search" type="text" class="form-control" [(ngModel)]="searchTerm" (input)="onFilterChange()"
+                placeholder="Buscar por nombre, ID o correo" />
             </div>
           </div>
         </div>
 
 
         <div class="table-responsive">
-          <table
-            cTable
-            hover
-            responsive
-            striped
-            align="middle"
-            class="table table-bordered table-hover mb-0"
-          >
+          <table cTable hover responsive striped align="middle" class="table table-bordered table-hover mb-0">
             <thead class="text-nowrap text-truncate">
               <tr>
                 <th class="bg-body-tertiary text-center ">
@@ -59,17 +62,21 @@
                 <th class="bg-body-tertiary">ID</th>
                 <th class="bg-body-tertiary">User</th>
                 <th class="bg-body-tertiary">Tipo de Usuario</th>
+                <th class="bg-body-tertiary text-center">Cedula</th>
                 <th class="bg-body-tertiary text-center">Correo</th>
                 <th class="bg-body-tertiary">Especialidad</th>
                 <th class="bg-body-tertiary">Area</th>
                 <th class="bg-body-tertiary">Acciones</th>
               </tr>
-              
+
             </thead>
             <tbody>
               <tr *ngFor="let user of filteredUsers; trackBy: trackByFn">
                 <td class="text-center">
-                  <c-avatar [size]="'md'" [src]="user.avatar" [status]="user.status"></c-avatar>
+                  <c-avatar [ngStyle]="{ 'background-color': getColorForUser(user), 'color': 'white' }"
+                    textColor="white">
+                    {{ getInitials(user.nombre) }}
+                  </c-avatar>
                 </td>
                 <td>
                   <div>{{ user.idUsuUni }}</div>
@@ -78,30 +85,32 @@
                   <div>{{ user.nombre }}</div>
                   <div class="small text-body-secondary text-nowrap">
                     <span>
-                      {{ user.facultadNombre }} | {{ user.carreraNombre }}  
+                      {{ user.facultadNombre }} | {{ user.carreraNombre }}
                     </span>
                   </div>
                 </td>
-                <td> 
-                  <span 
-                  class="saber rounded text-white" 
-                  [ngClass]="{
+                <td>
+                  <span class="saber rounded text-white" [ngClass]="{
                     'bg-warning': user.tipo === 'Alumno',
                     'bg-primary': user.tipo === 'Profesor',
                     'bg-success': user.tipo === 'Administrador'
                   }">
-                  {{ user.tipo }}
-                </span>
+                    {{ user.tipo }}
+                  </span>
                 </td>
+                <td>{{ user.cedula }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.especialidad }}</td>
                 <td>{{ user.area }}</td>
                 <td>
                   <div class="d-flex justify-content-around">
-                    <button cButton [cModalToggle]="verticallyCenteredModal.id" color="primary" variant="outline" style="margin-right: 10px;" (click)="openEditModal(user)">
+                    <button cButton [cModalToggle]="verticallyCenteredModal.id" color="primary" variant="outline"
+                      style="margin-right: 10px;" (click)="openEditModal(user)">
                       <svg cIcon class="me-2" name="cil-pen" style="margin-right: 0px !important;"></svg>
                     </button>
-                    <button cButton color="danger" variant="outline">
+
+                    <button cButton [cModalToggle]="Eliminar_Usuario.id" color="danger" variant="outline"
+                      (click)="openEditModal(user)">
                       <svg cIcon class="me-2" name="cil-trash" style="margin-right: 0px !important;"></svg>
                     </button>
                   </div>
@@ -121,68 +130,84 @@
   </c-modal-header>
   <c-modal-body>
     <div style="margin: 10px;">
-      <form [formGroup]="myForm"  class="row g-3">
+      <form [formGroup]="myForm" class="row g-3">
 
         <div class="col-md-6">
           <label for="idUsuUni" class="form-label">ID Usuario</label>
-          <input  id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni" [disabled]="true">
+          <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni" [disabled]="true">
         </div>
-  
+
         <div class="col-md-6">
           <label for="nombre" class="form-label">Nombre Completo</label>
           <input id="nombre" type="text" class="form-control" formControlName="nombre" [disabled]="true">
         </div>
-      
+
         <div class="col-md-12">
           <label for="email" class="form-label">Email</label>
-          <input id="email" type="email" class="form-control" formControlName="email" >
+          <input id="email" type="email" class="form-control" formControlName="email">
         </div>
-      
+
         <div class="col-12">
           <label for="facultad" class="form-label">Facultad</label>
-          <input type="text" class="form-control" formControlName="facultad" >
+          <input type="text" class="form-control" formControlName="facultad">
         </div>
-      
+
         <div class="col-md-6">
           <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-          <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario" >
+          <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario">
             <option value="ESTUDIANTE">Estudiante</option>
             <option value="PROFESOR">Profesor</option>
             <option value="ADMINISTRADOR">Administrador</option>
           </select>
         </div>
-      
+
         <div class="col-md-6">
           <label for="carrera" class="form-label">Carrera</label>
-          <input type="text" class="form-control" formControlName="carrera" >
+          <input type="text" class="form-control" formControlName="carrera">
         </div>
-      
+
         <div class="col-12">
           <label for="especialidad" class="form-label">Especialidad</label>
-          <input id="especialidad" type="text" class="form-control" formControlName="especialidad" >
+          <input id="especialidad" type="text" class="form-control" formControlName="especialidad">
         </div>
-  
+
         <div class="col-12">
           <label for="area" class="form-label">Area</label>
-          <input id="area" type="text" class="form-control" formControlName="area" >
+          <input id="area" type="text" class="form-control" formControlName="area">
         </div>
-      
+
         <div class="col-md-6">
           <label for="username" class="form-label">Username</label>
-          <input id="username" type="text" class="form-control" formControlName="username" >
+          <input id="username" type="text" class="form-control" formControlName="username">
         </div>
-      
+
         <div class="col-12">
           <button type="submit" class="btn btn-primary">Registrar</button>
         </div>
       </form>
     </div>
-    
+
   </c-modal-body>
   <c-modal-footer>
     <button [cModalToggle]="verticallyCenteredModal.id" cButton color="secondary">
       Close
     </button>
     <button cButton color="primary">Understood</button>
+  </c-modal-footer>
+</c-modal>
+
+<c-modal #Eliminar_Usuario alignment="center" id="Eliminar_Usuario" class="modal-md">
+  <c-modal-body>
+    <img src="assets/x.webp" alt="Eliminar Usuario" class="delete-image">
+    <h1 class="text-center" style="padding-top: 10px;padding-bottom: 10px;">¿Estas seguro?</h1>
+    <h4 class="text-center">Realmente quieres eliminar al usuario <span style="color: red;">{{ selectedUser?.nombre
+        }}</span> ? Este proceso no es reversible</h4>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="Eliminar_Usuario.id" cButton color="secondary">
+      Cancelar
+    </button>
+    <button [cModalToggle]="Eliminar_Usuario.id" cButton color="danger"
+      (click)="EliminarUser(selectedUser)">Eliminar</button>
   </c-modal-footer>
 </c-modal>
