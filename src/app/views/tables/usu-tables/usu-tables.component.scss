@@ -76,20 +76,12 @@
 
 .saber {
     padding-bottom: 5px;
-    padding-top: 1px;
+    padding-top: 2px;
     padding-left: 5px;
     padding-right: 5px;
-  &.bg-alumno {
-    background-color: #ffc107; /* Amarillo */
-    color: #fff;
-  }
-  &.bg-profesor {
-    background-color: #007bff; /* Azul */
-    color: #fff;
-  }
-  &.bg-administrador {
-    background-color: #28a745; /* Verde */
-    color: #fff;
+  &.bg-admin {
+    background-color: #ffffff; 
+    color: #000000 !important;
   }
 }
 

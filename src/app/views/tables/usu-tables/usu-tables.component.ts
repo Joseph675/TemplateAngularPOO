@@ -20,6 +20,7 @@ import {
   ModalHeaderComponent,
   ModalTitleDirective,
   ModalToggleDirective,
+  FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective
 } from '@coreui/angular';
 
 interface Faculty {
@@ -32,6 +33,9 @@ interface Faculty {
   templateUrl: './usu-tables.component.html',
   styleUrls: ['./usu-tables.component.scss'],
   imports: [
+    FormCheckComponent,
+    FormCheckInputDirective,
+    FormCheckLabelDirective,
     ProgressComponent,
     ButtonDirective,
     CommonModule,
@@ -74,16 +78,16 @@ export class UsuTablesComponent implements OnInit {
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
-      idUsuUni: [{ value: '', disabled: true }],
+      idUsuUni: ['', Validators.required], // Campo deshabilitado
+      cedula: ['', Validators.required],
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      facultad: [{ value: '', disabled: true }],
-      tipoUsuario: ['ESTUDIANTE', Validators.required],
-      carrera: [{ value: '', disabled: true }],
+      facultadId: [''],
+      carrera: [''],
       especialidad: [''],
       area: [''],
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      tipo: ['', Validators.required],
+      activo: [''] 
     });
   }
 
@@ -97,9 +101,6 @@ export class UsuTablesComponent implements OnInit {
   loadUsers(): void {
     this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
       (data) => {
-        console.log('Usuarios:', data);
-        console.log('Carreras:', this.carreras);
-        console.log('Facultades:', this.facultades);
 
         this.users = data.map(user => {
           // Convertir los valores a números para la comparación
@@ -260,6 +261,7 @@ export class UsuTablesComponent implements OnInit {
           this.toastMessage = 'Usuario actualizado exitosamente!';
           this.showToast = true;
           setTimeout(() => (this.showToast = false), 3000);
+          this.ngOnInit(); // Recargar los usuarios después de la edición
 
         },
         (error) => {
@@ -288,5 +290,15 @@ export class UsuTablesComponent implements OnInit {
 
   getInitials(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '?'; // Obtiene la primera letra del nombre
+  }
+
+  onFacultadChange(event: Event): void {
+    const selectedFacultadId = (event.target as HTMLSelectElement).value;
+  
+    console.log('Facultad seleccionada:', selectedFacultadId); // Verifica el ID de la facultad seleccionada
+    // Filtrar las carreras según la facultad seleccionada
+    this.filteredCarreras = this.carreras.filter(carrera => carrera.facultadId === parseInt(selectedFacultadId, 10));
+  
+    console.log('Carreras filtradas:', this.filteredCarreras); // Verifica las carreras filtradas
   }
 }

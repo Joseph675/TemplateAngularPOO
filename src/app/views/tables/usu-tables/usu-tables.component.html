@@ -102,7 +102,9 @@
                   <span class="saber rounded text-white" [ngClass]="{
                     'bg-warning': user.tipo === 'Alumno',
                     'bg-primary': user.tipo === 'Profesor',
-                    'bg-success': user.tipo === 'Administrador'
+                    'bg-success': user.tipo === 'Administrativo',
+                    'bg-admin' : user.tipo === 'Admin'
+
                   }">
                     {{ user.tipo }}
                   </span>
@@ -139,7 +141,17 @@
   </c-modal-header>
   <c-modal-body>
     <div style="margin: 10px;">
-      <form [formGroup]="myForm" class="row g-3">
+      <form [formGroup]="myForm" (ngSubmit)="guardarCambios()" class="row g-3">
+
+        <div class="col-md-12">
+          <label for="tipo" class="form-label">Tipo de Usuario</label>
+          <select id="tipo" class="form-select" formControlName="tipo">
+            <option value="Alumno">Estudiante</option>
+            <option value="Profesor">Profesor</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
 
         <div class="col-md-6">
           <label for="idUsuUni" class="form-label">ID Usuario</label>
@@ -147,8 +159,13 @@
         </div>
 
         <div class="col-md-6">
+          <label for="cedula" class="form-label">Cedula Usuario</label>
+          <input id="cedula" type="number" class="form-control" formControlName="cedula">
+        </div>
+
+        <div class="col-md-12">
           <label for="nombre" class="form-label">Nombre Completo</label>
-          <input id="nombre" type="text" class="form-control" formControlName="nombre" [disabled]="true">
+          <input id="nombre" type="text" class="form-control" formControlName="nombre">
         </div>
 
         <div class="col-md-12">
@@ -156,44 +173,45 @@
           <input id="email" type="email" class="form-control" formControlName="email">
         </div>
 
-        <div class="col-12">
-          <label for="facultad" class="form-label">Facultad</label>
-          <input type="text" class="form-control" formControlName="facultad">
-        </div>
-
         <div class="col-md-6">
-          <label for="tipoUsuario" class="form-label">Tipo de Usuario</label>
-          <select id="tipoUsuario" class="form-select" formControlName="tipoUsuario">
-            <option value="ESTUDIANTE">Estudiante</option>
-            <option value="PROFESOR">Profesor</option>
-            <option value="ADMINISTRADOR">Administrador</option>
+          <label for="facultadId">Facultad</label>
+          <select id="facultadId" class="form-control" formControlName="facultadId" (change)="onFacultadChange($event)">
+            <option *ngFor="let facultad of facultades" [value]="facultad.facultadId">
+              {{ facultad.nombre }}
+            </option>
           </select>
         </div>
 
         <div class="col-md-6">
-          <label for="carrera" class="form-label">Carrera</label>
-          <input type="text" class="form-control" formControlName="carrera">
+          <label for="carrera">Carrera</label>
+          <select id="carrera" class="form-control" formControlName="carrera">
+            <option *ngFor="let carrera of filteredCarreras" [value]="carrera.carreraPk">
+              {{ carrera.nombre }}
+            </option>
+          </select>
         </div>
 
         <div class="col-12">
           <label for="especialidad" class="form-label">Especialidad</label>
-          <input id="especialidad" type="text" class="form-control" formControlName="especialidad">
+          <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
+            placeholder="Especialidad del Usuario">
         </div>
 
         <div class="col-12">
           <label for="area" class="form-label">Area</label>
-          <input id="area" type="text" class="form-control" formControlName="area">
+          <input id="area" type="text" class="form-control" formControlName="area" placeholder="Area del Usuario">
         </div>
+
+
 
         <div class="col-md-6">
-          <label for="username" class="form-label">Username</label>
-          <input id="username" type="text" class="form-control" formControlName="username">
-        </div>
-
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Registrar</button>
+          <c-form-check [switch]="true">
+            <label cFormCheckLabel>Estado(Activa/Desactiva)</label>
+            <input cFormCheckInput checked id="activo" formControlName="activo" type="checkbox" />
+          </c-form-check>
         </div>
       </form>
+
     </div>
 
   </c-modal-body>
@@ -201,8 +219,9 @@
     <button [cModalToggle]="verticallyCenteredModal.id" cButton color="secondary">
       Close
     </button>
-    <button cButton color="primary">Understood</button>
+    <button [cModalToggle]="verticallyCenteredModal.id" type="submit" class="btn btn-primary" [disabled]="myForm.invalid" (click)="guardarCambios()">Registrar</button>
   </c-modal-footer>
+
 </c-modal>
 
 <c-modal #Eliminar_Usuario alignment="center" id="Eliminar_Usuario" class="modal-md">
