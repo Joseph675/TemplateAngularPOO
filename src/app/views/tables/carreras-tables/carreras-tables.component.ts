@@ -28,15 +28,11 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {provideNativeDateAdapter} from '@angular/material/core';
 
-interface Faculty {
-  name: string;
-  carreras: string[];
-}
 
 @Component({
-  selector: 'app-usu-tables',
-  templateUrl: './usu-tables.component.html',
-  styleUrls: ['./usu-tables.component.scss'],
+  selector: 'app-carrera-tables',
+  templateUrl: './carrera-tables.component.html',
+  styleUrls: ['./carrera-tables.component.scss'],
   providers: [provideNativeDateAdapter()],
   imports: [
     MatDatepickerModule,
@@ -65,7 +61,7 @@ interface Faculty {
   ],
   standalone: true
 })
-export class UsuTablesComponent implements OnInit {
+export class CarreraTablesComponent implements OnInit {
   myForm!: FormGroup;
 
   users: any[] = [];

@@ -3,6 +3,10 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective} from '@coreui/angular';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 interface Faculty {
   name: string;
@@ -12,8 +16,9 @@ interface Faculty {
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
+  providers: [provideNativeDateAdapter()],
   styleUrls: ['./usuarios.component.scss'],
-  imports: [CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
+  imports: [MatDatepickerModule,MatInputModule,MatFormFieldModule ,CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
   standalone: true})
   
 export class UsuariosComponent implements OnInit {
@@ -36,6 +41,7 @@ export class UsuariosComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       facultadId: [''],
       carrera: [''],
+      fechaNacimiento: ['', Validators.required],
       especialidad: [''], // Sin validadores, es opcional
       area: [''],         // Sin validadores, es opcional
       passwordHash: ['', Validators.required],
@@ -67,6 +73,7 @@ export class UsuariosComponent implements OnInit {
             email: '', // Valor inicial para email
             facultadId: '', // Valor inicial para facultadId
             carrera: '', // Valor inicial para carrera
+            fechaNacimiento: '', // Valor inicial para fechaNacimiento
             especialidad: '', // Valor inicial para especialidad
             area: '', // Valor inicial para area
             passwordHash: '', // Valor inicial para passwordHash

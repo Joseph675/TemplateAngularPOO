@@ -1,4 +1,5 @@
-<div id="toast" class="toast" [class.show]="showToast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+<div id="toast" class="toast" [class.show]="showToast" [class.success]="toastType === 'success'"
+  [class.error]="toastType === 'error'">
   <div class="toast-content">
     <div class="toast-icon">
       <span *ngIf="toastType === 'success'">✅</span>
@@ -19,7 +20,7 @@
         <strong>Formulario</strong> <small>de Usuarios</small>
       </c-card-header>
       <c-card-body>
-        
+
         <form [formGroup]="myForm" (ngSubmit)="registrar()" class="row g-3">
 
           <div class="col-md-12">
@@ -34,33 +35,37 @@
 
           <div class="col-md-6">
             <label for="idUsuUni" class="form-label">ID Usuario</label>
-            <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni" placeholder="ID de Universidad del Usuario">
+            <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni"
+              placeholder="ID de Universidad del Usuario">
           </div>
 
           <div class="col-md-6">
             <label for="cedula" class="form-label">Cedula Usuario</label>
-            <input id="cedula" type="number" class="form-control" formControlName="cedula" placeholder="Cedula del Usuario">
+            <input id="cedula" type="number" class="form-control" formControlName="cedula"
+              placeholder="Cedula del Usuario">
           </div>
 
           <div class="col-md-12">
             <label for="nombre" class="form-label">Nombre Completo</label>
-            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Nombre Completo del Usuario">
+            <input id="nombre" type="text" class="form-control" formControlName="nombre"
+              placeholder="Nombre Completo del Usuario">
           </div>
-        
+
           <div class="col-md-12">
             <label for="email" class="form-label">Email</label>
             <input id="email" type="email" class="form-control" formControlName="email" placeholder="Email del Usuario">
           </div>
-        
+
           <div class="col-md-6">
             <label for="facultadId">Facultad</label>
-            <select id="facultadId" class="form-control" formControlName="facultadId" (change)="onFacultadChange($event)">
+            <select id="facultadId" class="form-control" formControlName="facultadId"
+              (change)="onFacultadChange($event)">
               <option *ngFor="let facultad of facultades" [value]="facultad.facultadId">
                 {{ facultad.nombre }}
               </option>
             </select>
           </div>
-          
+
           <div class="col-md-6">
             <label for="carrera">Carrera</label>
             <select id="carrera" class="form-control" formControlName="carrera">
@@ -69,22 +74,32 @@
               </option>
             </select>
           </div>
-        
+
+          <label for="fechaNacimiento">Fecha de nacimiento</label>
+          <mat-form-field style="margin-top: 0px;">
+            <input matInput [matDatepicker]="picker" id="fechaNacimiento" formControlName="fechaNacimiento">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+
           <div class="col-12">
             <label for="especialidad" class="form-label">Especialidad</label>
-            <input id="especialidad" type="text" class="form-control" formControlName="especialidad" placeholder="Especialidad del Usuario">
+            <input id="especialidad" type="text" class="form-control" formControlName="especialidad"
+              placeholder="Especialidad del Usuario">
           </div>
 
           <div class="col-12">
             <label for="area" class="form-label">Area</label>
-            <input id="area" type="text" class="form-control" formControlName="area"  placeholder="Area del Usuario">
+            <input id="area" type="text" class="form-control" formControlName="area" placeholder="Area del Usuario">
           </div>
-        
-         
-        
+
+
+
           <div class="col-md-12">
             <label for="passwordHash" class="form-label">Password</label>
-            <input id="passwordHash" type="password" class="form-control" formControlName="passwordHash" placeholder="Password del Usuario">
+            <input id="passwordHash" type="password" class="form-control" formControlName="passwordHash"
+              placeholder="Password del Usuario">
           </div>
 
           <div class="col-md-6">
@@ -93,12 +108,12 @@
               <input cFormCheckInput checked id="activo" formControlName="activo" type="checkbox" />
             </c-form-check>
           </div>
-        
+
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary" [disabled]="myForm.invalid">Registrar</button>
           </div>
         </form>
-        
+
       </c-card-body>
     </c-card>
   </c-col>

@@ -61,3 +61,7 @@
 .toast-close:hover {
   color: black;
 }
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled){
+  background-color: #ff0000 !important;
+}

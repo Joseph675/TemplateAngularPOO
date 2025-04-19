@@ -16,7 +16,23 @@ export const routes: Routes = [
         path: 'usu-tables',
         loadComponent: () => import('./usu-tables/usu-tables.component').then(m => m.UsuTablesComponent),
         data: {
-          title: 'Tables'
+          title: 'Listado de Usuarios'
+        }
+      }
+      ,
+      {
+        path: 'facu-tables',
+        loadComponent: () => import('./facu-tables/facu-tables.component').then(m => m.FacuTablesComponent),
+        data: {
+          title: 'Listado de Facultades'
+        }
+      }
+      ,
+      {
+        path: 'carreras-tables',
+        loadComponent: () => import('./carreras-tables/carreras-tables.component').then(m => m.CarreraTablesComponent),
+        data: {
+          title: 'Listado de Carreras'
         }
       }
     ]
