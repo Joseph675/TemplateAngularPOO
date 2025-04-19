@@ -234,7 +234,7 @@ export class UsuTablesComponent implements OnInit {
 
         // Mostrar mensaje de éxito
         this.toastType = 'success';
-        this.toastMessage = 'Usuario registrado exitosamente!';
+        this.toastMessage = 'Usuario Eliminado exitosamente!';
         this.showToast = true;
         setTimeout(() => this.showToast = false, 3000);
 
