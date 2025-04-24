@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective} from '@coreui/angular';
+import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, FormControlDirective, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective } from '@coreui/angular';
 
 interface Faculty {
   name: string;
@@ -13,9 +13,10 @@ interface Faculty {
   selector: 'app-materias',
   templateUrl: './materias.component.html',
   styleUrls: ['./materias.component.scss'],
-  imports: [CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
-  standalone: true})
-  
+  imports: [CommonModule, HttpClientModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, FormControlDirective, ReactiveFormsModule, FormsModule, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective],
+  standalone: true
+})
+
 export class MateriasComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
@@ -25,55 +26,7 @@ export class MateriasComponent implements OnInit {
   time? = new Date();
 
   users: any[] = [];
-  faculties: Faculty[] = [
-    {
-      name: 'Facultad de Ingeniería',
-      carreras: [
-        'Ingeniería de Sistemas',
-        'Ingeniería Civil',
-        'Ingeniería Industrial',
-        'Ingeniería Electrónica',
-        'Ingeniería Mecánica'
-      ]
-    },
-    {
-      name: 'Facultad de Derecho',
-      carreras: [
-        'Derecho',
-        'Ciencias Políticas y Relaciones Internacionales'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Salud',
-      carreras: [
-        'Medicina',
-        'Enfermería',
-        'Odontología',
-        'Medicina Veterinaria'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias Económicas y Administrativas',
-      carreras: [
-        'Administración de Empresas',
-        'Contaduría Pública',
-        'Economía',
-        'Finanzas',
-        'Mercadeo'
-      ]
-    },
-    {
-      name: 'Facultad de Ciencias de la Educación y Humanidades',
-      carreras: [
-        'Pedagogía',
-        'Psicología',
-        'Trabajo Social',
-        'Comunicación Social',
-        'Historia'
-      ]
-    }
-  ];
-
+  carreras: any[] = [];
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
@@ -85,15 +38,16 @@ export class MateriasComponent implements OnInit {
       tipoUsuario: ['ESTUDIANTE', Validators.required],
       carrera: ['', Validators.required],
       especialidad: [''],
-      area: [''],  
+      area: [''],
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
- ngOnInit(): void {
-  this.loadUsers();
- }
+  ngOnInit(): void {
+    this.loadUsers();
+    this.loadCarreras();
+  }
 
 
   registrar(): void {
@@ -133,12 +87,23 @@ export class MateriasComponent implements OnInit {
   loadUsers(): void {
     this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
       (data) => {
-        this.users = data;
-        console.log('Usuarios cargados:', this.users);
-
+        // Filtrar solo los usuarios cuyo tipo sea "Profesor"
+        this.users = data.filter(user => user.tipo === 'Profesor');
+        console.log('Usuarios cargados (solo Profesores):', this.users);
       },
       (error) => {
         console.error('Error al cargar los usuarios:', error);
+      }
+    );
+  }
+
+  loadCarreras(): void {
+    this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(
+      (data) => {
+        this.carreras = data;
+      },
+      (error) => {
+        console.error('Error al cargar las carreras:', error);
       }
     );
   }

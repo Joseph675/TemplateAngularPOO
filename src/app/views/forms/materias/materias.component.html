@@ -27,15 +27,56 @@
           </div>
 
           <div class="col-md-6">
-            <label for="nombre" class="form-label">Nombre Materia</label>
+            <label for="codigo" class="form-label">Código</label>
+            <input id="codigo" type="text" class="form-control" formControlName="codigo">
+          </div>
+
+          <div class="col-md-12">
+            <label for="nombre" class="form-label">Nombre</label>
             <input id="nombre" type="text" class="form-control" formControlName="nombre">
           </div>
 
-          <div class="col-12">
-            <label for="facultad" class="form-label">Facultad</label>
-            <select id="facultad" class="form-select" formControlName="facultad">
-              <option *ngFor="let faculty of faculties" [value]="faculty.name">
-                {{ faculty.name }}
+          <div cFormFloating>
+            <label cLabel for="descripcion">Descripción</label>
+            <textarea cFormControl id="descripcion" formControlName="descripcion" placeholder="Descripción de la Facultad aquí"></textarea>
+          </div>
+
+        
+          <div class="col-md-6">
+            <label for="creditos" class="form-label">Creditos</label>
+            <input id="creditos" type="number" class="form-control" formControlName="creditos">
+          </div>
+
+          <div class="col-md-6">
+            <label for="cupoMaximo" class="form-label">Cupo Max</label>
+            <input id="cupoMaximo" type="number" class="form-control" formControlName="cupoMaximo">
+          </div>
+
+          <div class="col-md-6">
+            <label for="horasSemanales" class="form-label">Horas Semanales</label>
+            <input id="horasSemanales" type="number" class="form-control" formControlName="horasSemanales">
+          </div>
+
+          <div class="col-md-6">
+            <label for="anioCursada" class="form-label">Semestre Cursada</label>
+            <input id="anioCursada" type="number" class="form-control" formControlName="anioCursada">
+          </div>
+
+
+          <div class="col-md-12">
+            <label for="cuatrimestre" class="form-label">Cuatrimestre</label>
+            <select id="cuatrimestre" class="form-select" formControlName="cuatrimestre">
+              <option value="Primer">Primer</option>
+              <option value="Segundo">Segundo</option>
+              <option value="Anual">Anual</option>
+            </select>
+          </div>
+
+          <div class="col-md-12">
+            <label for="carrera" class="form-label">Carrera</label>
+            <select id="carrera" class="form-select" formControlName="carrera">
+              <option *ngFor="let carrera of carreras" [value]="carrera.carreraPk">
+                {{ carrera.nombre }}
               </option>
             </select>
           </div>
@@ -47,6 +88,13 @@
                 {{ user.nombre }}
               </option>
             </select>
+          </div>
+
+          <div class="col-md-6">
+            <c-form-check [switch]="true">
+              <label cFormCheckLabel>Estado de Facultad (Activa/Desactiva)</label>
+              <input cFormCheckInput checked id="activa" formControlName="activa" type="checkbox" />
+            </c-form-check>
           </div>
 
           <div class="col-12">
