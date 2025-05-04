@@ -25,40 +25,39 @@ export class MateriasComponent implements OnInit {
 
   time? = new Date();
 
-  users: any[] = [];
   carreras: any[] = [];
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
-      idUsuUni: ['', Validators.required],
-      nombre: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      facultad: ['', Validators.required],
-      tipoUsuario: ['ESTUDIANTE', Validators.required],
-      carrera: ['', Validators.required],
-      especialidad: [''],
-      area: [''],
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      materiaPk: ['', Validators.required],
+      codigo: ['', Validators.required],
+      nombre: ['', [Validators.required]],
+      descripcion: ['', Validators.required],
+      creditos: ['', Validators.required],
+      cupoMaximo: ['', Validators.required],
+      horasSemanales: ['', Validators.required],
+      anioCursada: ['', Validators.required],
+      cuatrimestre: ['', Validators.required],
+      carreraPk: ['', Validators.required],
+      activa: [true]  // Valor predeterminado como booleano
     });
   }
 
   ngOnInit(): void {
-    this.loadUsers();
     this.loadCarreras();
   }
 
 
   registrar(): void {
-    console.log(this.myForm);
+    console.log(this.myForm.value); // Verifica el valor del formulario antes de enviarlo
     if (this.myForm.valid) {
       const usuario = this.myForm.value;
-      this.http.post('http://localhost:8080/api/usuarios', usuario).subscribe(
+      this.http.post('http://localhost:8080/api/materias', usuario).subscribe(
         (response) => {
-          console.log('Usuario creado exitosamente:', response);
+          console.log('materias creado exitosamente:', response);
           this.toastType = 'success';
-          this.toastMessage = 'Usuario registrado exitosamente!';
+          this.toastMessage = 'Materias registrado exitosamente!';
           this.showToast = true;
           setTimeout(() => this.showToast = false, 3000);
         },
@@ -66,9 +65,9 @@ export class MateriasComponent implements OnInit {
           console.error('Error al crear usuario:', error);
           this.toastType = 'error'; // Asegurarse de que el tipo de toast sea error
           if (error.status === 409) {
-            this.toastMessage = 'El usuario ya existe!';
+            this.toastMessage = 'El Materias ya existe!';
           } else {
-            this.toastMessage = 'Error al registrar el usuario!';
+            this.toastMessage = 'Error al registrar el Materias!';
           }
           this.showToast = true;
           setTimeout(() => this.showToast = false, 3000);
@@ -84,18 +83,7 @@ export class MateriasComponent implements OnInit {
   }
 
 
-  loadUsers(): void {
-    this.http.get<any[]>('http://localhost:8080/api/usuarios').subscribe(
-      (data) => {
-        // Filtrar solo los usuarios cuyo tipo sea "Profesor"
-        this.users = data.filter(user => user.tipo === 'Profesor');
-        console.log('Usuarios cargados (solo Profesores):', this.users);
-      },
-      (error) => {
-        console.error('Error al cargar los usuarios:', error);
-      }
-    );
-  }
+  
 
   loadCarreras(): void {
     this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(

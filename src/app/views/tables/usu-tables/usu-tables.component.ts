@@ -253,8 +253,6 @@ export class UsuTablesComponent implements OnInit {
   guardarCambios(): void {
     if (this.myForm.valid) {
       const updatedUser = this.myForm.value;
-      console.log('Usuario actualizado:', updatedUser);
-
       // Realizar la solicitud PUT al backend
       this.http.put(`http://localhost:8080/api/usuarios/${this.selectedUser.idUsuario}`, updatedUser).subscribe(
         (response) => {
@@ -292,6 +290,7 @@ export class UsuTablesComponent implements OnInit {
       setTimeout(() => (this.showToast = false), 3000);
     }
   }
+  
   getColorForUser(user: any): string {
     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A133FF', '#33FFF5', '#F5FF33'];
     const index = user.idUsuUni % colors.length; // Usa el ID para asignar un color

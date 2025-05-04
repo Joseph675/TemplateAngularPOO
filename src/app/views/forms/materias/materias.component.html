@@ -22,8 +22,8 @@
         <form [formGroup]="myForm" (ngSubmit)="registrar()" class="row g-3">
 
           <div class="col-md-6">
-            <label for="idUsuUni" class="form-label">ID Materia</label>
-            <input id="idUsuUni" type="number" class="form-control" formControlName="idUsuUni">
+            <label for="materiaPk" class="form-label">ID Materia</label>
+            <input id="materiaPk" type="number" class="form-control" formControlName="materiaPk">
           </div>
 
           <div class="col-md-6">
@@ -74,21 +74,14 @@
 
           <div class="col-md-12">
             <label for="carrera" class="form-label">Carrera</label>
-            <select id="carrera" class="form-select" formControlName="carrera">
+            <select id="carrera" class="form-select" formControlName="carreraPk">
               <option *ngFor="let carrera of carreras" [value]="carrera.carreraPk">
                 {{ carrera.nombre }}
               </option>
             </select>
           </div>
 
-          <div class="col-12">
-            <label for="Profesor" class="form-label"> Profesor</label>
-            <select id="Profesor" class="form-select" formControlName="idUsuUni">
-              <option *ngFor="let user of users" [value]="user.idUsuUni">
-                {{ user.nombre }}
-              </option>
-            </select>
-          </div>
+          
 
           <div class="col-md-6">
             <c-form-check [switch]="true">

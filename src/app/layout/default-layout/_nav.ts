@@ -228,6 +228,11 @@ export const navItems: INavData[] = [
         name: 'Carreras',
         url: '/tables/carreras-tables',
         icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Materias',
+        url: '/tables/materias-tables',
+        icon: 'nav-icon-bullet'
       }
     ]
   },
