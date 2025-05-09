@@ -161,51 +161,31 @@ export const navItems: INavData[] = [
         icon: 'nav-icon-bullet'
       },
       {
+        name: 'Materias por Carrera',
+        url: '/forms/carreras_materias-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Cursos',
+        url: '/forms/cursos-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Inscripciones',
+        url: '/forms/inscripciones-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Secciones',
+        url: '/forms/secciones',
+        icon: 'nav-icon-bullet'
+      },
+      {
         name: 'Asistencias',
         url: '/forms/asistencias-form',
         icon: 'nav-icon-bullet'
-      },
-
-      {
-        name: 'Form Control',
-        url: '/forms/form-control',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Select',
-        url: '/forms/select',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Checks & Radios',
-        url: '/forms/checks-radios',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Range',
-        url: '/forms/range',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Input Group',
-        url: '/forms/input-group',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Floating Labels',
-        url: '/forms/floating-labels',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Layout',
-        url: '/forms/layout',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Validation',
-        url: '/forms/validation',
-        icon: 'nav-icon-bullet'
       }
+      
     ]
   },
   

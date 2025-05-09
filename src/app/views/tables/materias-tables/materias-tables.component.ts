@@ -86,16 +86,11 @@ export class MateriaTablesComponent implements OnInit {
   constructor(private http: HttpClient, private fb: FormBuilder) {
     this.myForm = this.fb.group({
       materiaPk: ['', Validators.required],
-      nombre: ['', Validators.required],
       codigo: ['', Validators.required],
+      nombre: ['', [Validators.required]],
+      descripcion: ['', Validators.required],
       creditos: ['', Validators.required],
-      carreraPk: ['', Validators.required],
-      cupoMaximo: ['', Validators.required],
-      anioCursada: ['', Validators.required],
-      cuatrimestre: ['', Validators.required],
-      horasSemanales: ['', Validators.required],
-      descripcion: [''],
-      activa: [true]
+      activa: [true]  // Valor predeterminado como booleano
     });
   }
 

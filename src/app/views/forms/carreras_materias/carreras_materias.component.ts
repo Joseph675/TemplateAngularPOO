@@ -10,94 +10,87 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
-  selector: 'app-cursos',
-  templateUrl: './cursos.component.html',
-  styleUrls: ['./cursos.component.scss'],
+  selector: 'app-carreras_materias',
+  templateUrl: './carreras_materias.component.html',
+  styleUrls: ['./carreras_materias.component.scss'],
   providers: [provideNativeDateAdapter()],
   imports: [MatInputModule, MatIcon, MatTimepickerModule, MatFormFieldModule, CommonModule, HttpClientModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, FormControlDirective, ReactiveFormsModule, FormsModule, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective],
   standalone: true
 })
 
-export class CursosComponent implements OnInit {
+export class Carreras_MateriasComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
 
-  usuarios: any[] = []; // Cambiado a any[] para evitar errores de tipo
+  carreras: any[] = []; // Cambiado a any[] para evitar errores de tipo
   materias: any[] = []; // Cambiado a any[] para evitar errores de tipo
   tipoCursoSeleccionado: string = ''; // Variable para almacenar el tipo de curso seleccionado
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
-      cursoPk: ['', Validators.required],
+      carreraPk: ['', Validators.required],
       materiaPk: ['', Validators.required],
-      profesorId: ['', Validators.required],
-      tipoCurso: ['', Validators.required],
-      cicloLectivo: ['', Validators.required],
+      anioCursada: ['', Validators.required],
       cuatrimestre: ['', Validators.required],
-      horasSemanales: ['', Validators.required],
-      estado: ['', Validators.required],
-      aula: [''],
-      capacidad: [''],
-      plataforma: [''],
-      enlaceAcceso: [''],
+    
       activa: [true], // Valor predeterminado como booleano
     });
   }
 
   ngOnInit(): void {
     this.loadMaterias();
-    this.loadUsuarios();
+    this.loadCarreras();
   }
 
-  onTipoCursoChange(): void {
-    this.tipoCursoSeleccionado = this.myForm.get('tipoCurso')?.value; // Actualiza el tipo de curso seleccionado
-  }
 
 
   registrar(): void {
     console.log(this.myForm.value);
     if (this.myForm.valid) {
-      const Curso = this.myForm.value;
-      this.http.post('http://localhost:8080/api/cursos', Curso).subscribe(
+      // Construir el JSON con la estructura requerida
+      const curso = {
+        id: {
+          carreraPk: this.myForm.get('carreraPk')?.value,
+          materiaPk: this.myForm.get('materiaPk')?.value
+        },
+        anioCursada: this.myForm.get('anioCursada')?.value,
+        cuatrimestre: this.myForm.get('cuatrimestre')?.value,
+        activa: this.myForm.get('activa')?.value
+      };
+  
+      this.http.post('http://localhost:8080/api/carrera_materia', curso).subscribe(
         (response) => {
-          console.log('Curso creado exitosamente:', response);
+          console.log('carrera_materia creado exitosamente:', response);
           this.toastType = 'success';
-          this.toastMessage = 'Curso registrado exitosamente!';
+          this.toastMessage = 'Materia registrada a la carrera exitosamente!';
           this.showToast = true;
-
+  
           // Limpiar el formulario después de la creación exitosa
           this.myForm.reset({
-            cursoPk: '', // Valor inicial 
-            materiaPk: '', // Valor inicial para nombre
-            profesorId: '', // Valor inicial para codigo
-            tipoCurso: '', // Valor inicial para duracionanios
-            cicloLectivo: '', // Valor inicial
-            cuatrimestre: '', // Valor inicial para descripcion
-            horasSemanales: '', // Valor inicial para descripcion
-            aula: '', // Valor inicial para descripcion
-            capacidad: '', // Valor inicial para descripcion
-            plataforma: '', // Valor inicial para descripcion
-            enlaceAcceso: '', // Valor inicial para descripcion
-            activa: true // Valor inicial para activa
+            carreraPk: '', // Valor inicial
+            materiaPk: '', // Valor inicial
+            anioCursada: '', // Valor inicial
+            cuatrimestre: '', // Valor inicial
+            activa: true // Valor inicial
           });
-
-          setTimeout(() => this.showToast = false, 3000);
+  
+          setTimeout(() => (this.showToast = false), 3000);
         },
         (error) => {
           console.error('Error al crear Curso:', error);
           this.toastType = 'error';
           if (error.status === 409) {
-            this.toastMessage = 'La Curso ya existe!';
+            this.toastMessage = 'El Curso ya existe!';
           } else if (error.status === 400) {
             this.toastMessage = 'Datos inválidos!';
           } else {
-            this.toastMessage = 'Error al registrar la Curso!';
+            this.toastMessage = 'Error al registrar el Curso!';
           }
           this.showToast = true;
-          setTimeout(() => this.showToast = false, 3000);
+          setTimeout(() => (this.showToast = false), 3000);
         }
       );
     } else {
@@ -105,14 +98,14 @@ export class CursosComponent implements OnInit {
       this.toastType = 'error';
       this.toastMessage = 'El formulario no es válido!';
       this.showToast = true;
-      setTimeout(() => this.showToast = false, 3000);
+      setTimeout(() => (this.showToast = false), 3000);
     }
   }
 
-  loadUsuarios(): void {
-    this.http.get<any[]>('http://localhost:8080/api/usuarios/profesores ').subscribe(
+  loadCarreras(): void {
+    this.http.get<any[]>('http://localhost:8080/api/carreras').subscribe(
       (data) => {
-        this.usuarios = data;
+        this.carreras = data;
 
       },
       (error) => {

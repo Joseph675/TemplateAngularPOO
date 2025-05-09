@@ -35,11 +35,6 @@ export class MateriasComponent implements OnInit {
       nombre: ['', [Validators.required]],
       descripcion: ['', Validators.required],
       creditos: ['', Validators.required],
-      cupoMaximo: ['', Validators.required],
-      horasSemanales: ['', Validators.required],
-      anioCursada: ['', Validators.required],
-      cuatrimestre: ['', Validators.required],
-      carreraPk: ['', Validators.required],
       activa: [true]  // Valor predeterminado como booleano
     });
   }

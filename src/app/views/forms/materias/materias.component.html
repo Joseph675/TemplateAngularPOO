@@ -42,46 +42,10 @@
           </div>
 
         
-          <div class="col-md-6">
+          <div class="col-md-12">
             <label for="creditos" class="form-label">Creditos</label>
             <input id="creditos" type="number" class="form-control" formControlName="creditos">
           </div>
-
-          <div class="col-md-6">
-            <label for="cupoMaximo" class="form-label">Cupo Max</label>
-            <input id="cupoMaximo" type="number" class="form-control" formControlName="cupoMaximo">
-          </div>
-
-          <div class="col-md-6">
-            <label for="horasSemanales" class="form-label">Horas Semanales</label>
-            <input id="horasSemanales" type="number" class="form-control" formControlName="horasSemanales">
-          </div>
-
-          <div class="col-md-6">
-            <label for="anioCursada" class="form-label">Semestre Cursada</label>
-            <input id="anioCursada" type="number" class="form-control" formControlName="anioCursada">
-          </div>
-
-
-          <div class="col-md-12">
-            <label for="cuatrimestre" class="form-label">Cuatrimestre</label>
-            <select id="cuatrimestre" class="form-select" formControlName="cuatrimestre">
-              <option value="Primer">Primer</option>
-              <option value="Segundo">Segundo</option>
-              <option value="Anual">Anual</option>
-            </select>
-          </div>
-
-          <div class="col-md-12">
-            <label for="carrera" class="form-label">Carrera</label>
-            <select id="carrera" class="form-select" formControlName="carreraPk">
-              <option *ngFor="let carrera of carreras" [value]="carrera.carreraPk">
-                {{ carrera.nombre }}
-              </option>
-            </select>
-          </div>
-
-          
 
           <div class="col-md-6">
             <c-form-check [switch]="true">
@@ -89,8 +53,8 @@
               <input cFormCheckInput checked id="activa" formControlName="activa" type="checkbox" />
             </c-form-check>
           </div>
-
-          <div class="col-12">
+          
+          <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary">Registrar</button>
           </div>
 

@@ -93,7 +93,7 @@ export class UsuTablesComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       facultadId: [''],
       carrera: [''],
-      fechaNacimiento: ['', Validators.required],
+      fechaNacimiento: ['',],
       especialidad: [''],
       area: [''],
       tipo: ['', Validators.required],
