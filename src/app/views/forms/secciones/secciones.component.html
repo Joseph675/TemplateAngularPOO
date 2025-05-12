@@ -50,22 +50,18 @@
 
           <div class="col-md-6">
             <label for="horaInicio" class="form-label">Hora Inicio</label>
-            <input matInput [matTimepicker]="horaInicio" class="form-control" id="horaInicio" formControlName="horaInicio"
-                   (dateChange)="onTimeChange($event, 'horaInicio')" />
+            <input matInput [matTimepicker]="horaInicio" class="form-control" formControlName="horaInicio">
             <mat-timepicker #horaInicio></mat-timepicker>
           </div>
-          
-          <div class="col-md-6">
 
-            <mat-form-field>
-              <mat-label>Pick a time</mat-label>
-              <input matInput  [matTimepicker]="horaFin" class="form-control" formControlName="horaFin" (matTimepickerChange)="onTimeChange($event, 'horaFin')" >
-              <mat-timepicker-toggle matIconSuffix [for]="horaFin"/>
-              <mat-timepicker #horaFin/>
-            </mat-form-field>
+          <div class="col-md-6">
+            <label for="horaInicio" class="form-label">Hora Inicio</label>
+
+            <input matInput [matTimepicker]="horaFin" class="form-control" formControlName="horaFin">
+            <mat-timepicker #horaFin></mat-timepicker>
           </div>
 
-          
+
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary" [disabled]="myForm.invalid">Registrar</button>
           </div>

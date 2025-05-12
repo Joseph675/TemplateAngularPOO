@@ -1,6 +1,7 @@
 import { INavData } from '@coreui/angular';
+import { CustomNavData } from './CustomNavData'; // Asegúrate de importar la interfaz correcta
 
-export const navItems: INavData[] = [
+export const navItems: CustomNavData[] = [
   {
     name: 'Dashboard',
     url: '/dashboard',
@@ -139,6 +140,7 @@ export const navItems: INavData[] = [
     name: 'Forms',
     url: '/forms',
     iconComponent: { name: 'cil-notes' },
+    allowedFor: ['Admin'],
     children: [
       {
         name: 'Usuarios',
@@ -193,6 +195,7 @@ export const navItems: INavData[] = [
     name: 'Tables',
     url: '/tables',
     iconComponent: { name: 'cil-align-center' },
+    allowedFor: ['Admin'],
     children: [
       {
         name: 'Usuarios',
@@ -216,7 +219,66 @@ export const navItems: INavData[] = [
       }
     ]
   },
+  {
+    title: true,
+    name: 'Alumnos'
+  },
+  {
+    name: 'Inscripciones ',
+    url: '/alumnos',
+    iconComponent: { name: 'cil-education' },
+    allowedFor: ['Alumno'], 
+    children: [
+      {
+        name: 'Catálogo de cursos disponibles',
+        url: '/alumnos/inscripciones-form',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Mis inscripciones',
+        url: '/alumnos/misinscripciones',
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
+  
+  {
+    name: 'Horario De Clases',
+    url: '/sss',
+    iconComponent: { name: 'cil-clock' },
+    allowedFor: ['Alumno'], 
+    children: [
+      {
+        name: 'Ver mi horario semanal',
+        url: '/tables/usu-tables',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Detalles de sesión',
+        url: '/tables/facu-tables',
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
 
+  {
+    name: 'Asistencias',
+    url: '/sss',
+    iconComponent: { name: 'cil-address-book' },
+    allowedFor: ['Alumno'], 
+    children: [
+      {
+        name: 'Registro de asistencias',
+        url: '/tables/usu-tables',
+        icon: 'nav-icon-bullet'
+      },
+      {
+        name: 'Historial de asistencia',
+        url: '/tables/facu-tables',
+        icon: 'nav-icon-bullet'
+      }
+    ]
+  },
   {
     name: 'Charts',
     iconComponent: { name: 'cil-chart-pie' },
@@ -316,6 +378,8 @@ export const navItems: INavData[] = [
       }
     ]
   },
+  
+  
   {
     title: true,
     name: 'Links',

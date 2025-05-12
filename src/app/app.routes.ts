@@ -38,12 +38,20 @@ export const routes: Routes = [
       {
         path: 'forms',
         loadChildren: () => import('./views/forms/routes').then((m) => m.routes),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: { allowedRoles: ['Admin'] }
       },
       {
         path: 'tables',
         loadChildren: () => import('./views/tables/routes').then((m) => m.routes),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        data: { allowedRoles: ['Admin'] }
+      },
+      {
+        path: 'alumnos',
+        loadChildren: () => import('./views/alumnos/routes').then((m) => m.routes),
+        canActivate: [AuthGuard],
+        data: { allowedRoles: ['Alumno'] }
       },
       {
         path: 'icons',

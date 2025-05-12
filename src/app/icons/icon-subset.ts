@@ -1,4 +1,7 @@
 import {
+  cilAddressBook,
+  cilEducation,
+  cilClock,
   cibCcAmex,
   cibCcApplePay,
   cibCcMastercard,
@@ -100,6 +103,9 @@ import { signet } from './signet';
 import { logo } from './logo';
 
 export const iconSubset = {
+  cilAddressBook,
+  cilEducation,
+  cilClock,
   cibCcAmex,
   cibCcApplePay,
   cibCcMastercard,
@@ -200,6 +206,9 @@ export const iconSubset = {
 };
 
 export enum IconSubset {
+  cilAddressBook = 'cilAddressBook',
+  cilEducation = 'cilEducation',
+  cilClock = 'cilClock',
   cibCcAmex = 'cibCcAmex',
   cibCcApplePay = 'cibCcApplePay',
   cibCcMastercard = 'cibCcMastercard',

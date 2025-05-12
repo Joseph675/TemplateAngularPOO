@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 import {
   AvatarComponent,
@@ -30,6 +31,7 @@ import { IconDirective } from '@coreui/icons-angular';
   imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavItemComponent, NavLinkDirective, RouterLink, RouterLinkActive, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownHeaderDirective, DropdownItemDirective, BadgeComponent, DropdownDividerDirective]
 })
 export class DefaultHeaderComponent extends HeaderComponent {
+  userName: string = '';
 
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
@@ -45,8 +47,15 @@ export class DefaultHeaderComponent extends HeaderComponent {
     return this.colorModes.find(mode => mode.name === currentMode)?.icon ?? 'cilSun';
   });
 
-  constructor() {
+  constructor(private authService: AuthService) {
     super();
+  }
+
+  ngOnInit(): void {
+    const user = this.authService.getUser(); // Recuperar el usuario desde localStorage
+    console.log('Usuario recuperado:', user);
+    
+      this.userName = user.nombre || 'Usuario'; // Asignar el nombre del usuario o un valor predeterminado
   }
 
   sidebarId = input('sidebar1');

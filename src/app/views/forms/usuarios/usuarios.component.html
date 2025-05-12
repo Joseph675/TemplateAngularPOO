@@ -75,12 +75,17 @@
             </select>
           </div>
 
-          <label for="fechaNacimiento">Fecha de nacimiento</label>
-          <mat-form-field style="margin-top: 0px;">
-            <input matInput [matDatepicker]="picker" id="fechaNacimiento" formControlName="fechaNacimiento">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+          <div class="col-md-12">
+            <label for="fechaNacimiento">Fecha de nacimiento</label>
+            <div class="input-group">
+              <!-- Toggle para abrir el datepicker -->
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <!-- Input enlazado al datepicker -->
+              <input matInput [matDatepicker]="picker" id="fechaNacimiento" formControlName="fechaNacimiento" class="form-control" placeholder="Seleccione una fecha" />
+              <!-- Componente del datepicker -->
+              <mat-datepicker #picker></mat-datepicker>
+            </div>
+          </div>
 
 
           <div class="col-12">
@@ -97,8 +102,8 @@
 
 
           <div class="col-md-12">
-            <label for="passwordHash" class="form-label">Password</label>
-            <input id="passwordHash" type="password" class="form-control" formControlName="passwordHash"
+            <label for="password" class="form-label">Password</label>
+            <input id="password" type="password" class="form-control" formControlName="password"
               placeholder="Password del Usuario">
           </div>
 

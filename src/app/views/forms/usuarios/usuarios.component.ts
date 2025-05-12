@@ -44,7 +44,7 @@ export class UsuariosComponent implements OnInit {
       fechaNacimiento: ['', Validators.required],
       especialidad: [''], // Sin validadores, es opcional
       area: [''],         // Sin validadores, es opcional
-      passwordHash: ['', Validators.required],
+      password: ['', Validators.required],
       activo: [true], // Valor predeterminado como booleano
     });
   }
@@ -57,37 +57,59 @@ export class UsuariosComponent implements OnInit {
   registrar(): void {
     console.log(this.myForm.value);
     if (this.myForm.valid) {
-      const usuario = this.myForm.value;
-      this.http.post('http://localhost:8080/api/usuarios', usuario).subscribe(
+      // Construir el objeto con la estructura requerida
+      const formData = this.myForm.value;
+      const payload = {
+        usuarioDTO: {
+          tipo: formData.tipo,
+          idUsuUni: formData.idUsuUni,
+          cedula: formData.cedula,
+          nombre: formData.nombre,
+          email: formData.email,
+          facultadId: formData.facultadId,
+          carrera: formData.carrera,
+          fechaNacimiento: formData.fechaNacimiento,
+          especialidad: formData.especialidad,
+          area: formData.area,
+          activo: formData.activo
+        },
+        password: formData.password
+      };
+  
+      console.log('Payload enviado:', payload);
+  
+      // Enviar el payload al backend
+      this.http.post('http://localhost:8080/api/usuarios', payload).subscribe(
         (response) => {
           console.log('Usuario creado exitosamente:', response);
           this.toastType = 'success';
           this.toastMessage = 'Usuario registrado exitosamente!';
           this.showToast = true;
-
+  
+          // Reiniciar el formulario con valores iniciales
           this.myForm.reset({
-            tipo: '', // Valor inicial para tipo
-            idUsuUni: '', // Valor inicial para idUsuUni
-            cedula: '', // Valor inicial para cedula
-            nombre: '', // Valor inicial para nombre
-            email: '', // Valor inicial para email
-            facultadId: '', // Valor inicial para facultadId
-            carrera: '', // Valor inicial para carrera
-            fechaNacimiento: '', // Valor inicial para fechaNacimiento
-            especialidad: '', // Valor inicial para especialidad
-            area: '', // Valor inicial para area
-            passwordHash: '', // Valor inicial para passwordHash
-            activo: true // Valor inicial para activo
+            tipo: '',
+            idUsuUni: '',
+            cedula: '',
+            nombre: '',
+            email: '',
+            facultadId: '',
+            carrera: '',
+            fechaNacimiento: '',
+            especialidad: '',
+            area: '',
+            password: '',
+            activo: true
           });
-
-          setTimeout(() => this.showToast = false, 3000);
+  
+          setTimeout(() => (this.showToast = false), 3000);
         },
         (error) => {
           console.error('Error al crear usuario:', error.error);
-          this.toastType = 'error'; // Asegurarse de que el tipo de toast sea error
-            this.toastMessage = error.error;
+          this.toastType = 'error';
+          this.toastMessage = error.error;
           this.showToast = true;
-          setTimeout(() => this.showToast = false, 3000);
+          setTimeout(() => (this.showToast = false), 3000);
         }
       );
     } else {
@@ -95,7 +117,7 @@ export class UsuariosComponent implements OnInit {
       this.toastType = 'error';
       this.toastMessage = 'El formulario no es válido!';
       this.showToast = true;
-      setTimeout(() => this.showToast = false, 3000);
+      setTimeout(() => (this.showToast = false), 3000);
     }
   }
 

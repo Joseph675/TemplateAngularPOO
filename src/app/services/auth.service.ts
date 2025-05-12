@@ -11,8 +11,8 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   // Método para iniciar sesión
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>(this.apiUrl, { email, password });
+  login(email: string, password: string): Observable<{ token: string; user: any }> {
+    return this.http.post<{ token: string; user: any }>(this.apiUrl, { email, password });
   }
 
   // Método para guardar el token en localStorage
@@ -28,6 +28,7 @@ export class AuthService {
   // Método para eliminar el token (logout)
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   // Método para verificar si el usuario está autenticado
@@ -35,4 +36,20 @@ export class AuthService {
     const token = this.getToken();
     return !!token; // Retorna true si el token existe, false si no
   }
+
+  // Método para guardar la información del usuario en localStorage
+saveUser(user: any): void {
+  localStorage.setItem('user', JSON.stringify(user));
+}
+
+// Método para obtener la información del usuario desde localStorage
+getUser(): any {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+}
+
+// Método para eliminar la información del usuario (logout)
+clearUser(): void {
+  localStorage.removeItem('user');
+}
 }

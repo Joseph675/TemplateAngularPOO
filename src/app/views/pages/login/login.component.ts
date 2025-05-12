@@ -21,10 +21,12 @@ export class LoginComponent {
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
-        // Guardar el token en localStorage
+        // Guardar el token y la información del usuario
         this.authService.saveToken(response.token);
-        console.log('Inicio de sesión exitoso. Token guardado:', response.token);
-
+        this.authService.saveUser(response.user);
+  
+        console.log('Inicio de sesión exitoso. Usuario guardado:', response.user);
+  
         // Redirigir al usuario al dashboard
         this.router.navigate(['/dashboard']);
       },
