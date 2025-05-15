@@ -10,13 +10,13 @@ interface Faculty {
 }
 
 @Component({
-  selector: 'app-asistencias',
-  templateUrl: './asistencias.component.html',
-  styleUrls: ['./asistencias.component.scss'],
+  selector: 'app-registrarasistenciasprofe.component',
+  templateUrl: './registrarasistenciasprofe.component.component.html',
+  styleUrls: ['./registrarasistenciasprofe.component.component.scss'],
   imports: [ ProgressComponent, CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
   standalone: true})
   
-export class AsistenciasComponent implements OnInit {
+export class VerAsistenciasAlumnoComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';

@@ -244,18 +244,13 @@ export const navItems: CustomNavData[] = [
   
   {
     name: 'Horario De Clases',
-    url: '/sss',
+    url: '/horariosemanal',
     iconComponent: { name: 'cil-clock' },
     allowedFor: ['Alumno'], 
     children: [
       {
         name: 'Ver mi horario semanal',
-        url: '/tables/usu-tables',
-        icon: 'nav-icon-bullet'
-      },
-      {
-        name: 'Detalles de sesión',
-        url: '/tables/facu-tables',
+        url: '/alumnos/horariosemanal',
         icon: 'nav-icon-bullet'
       }
     ]
@@ -263,13 +258,13 @@ export const navItems: CustomNavData[] = [
 
   {
     name: 'Asistencias',
-    url: '/sss',
+    url: '/asistencias',
     iconComponent: { name: 'cil-address-book' },
-    allowedFor: ['Alumno'], 
+    allowedFor: ['Profesor'], 
     children: [
       {
         name: 'Registro de asistencias',
-        url: '/tables/usu-tables',
+        url: '/asistencias/registrar_asistencia',
         icon: 'nav-icon-bullet'
       },
       {

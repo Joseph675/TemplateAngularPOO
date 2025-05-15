@@ -25,6 +25,13 @@ export const routes: Routes = [
         data: {
           title: 'Mis Inscripciones'
         }
+      },
+      {
+        path: 'horariosemanal',
+        loadComponent: () => import('./horariosemanal/HorarioSemanal.component').then(m => m.HorarioSemanalComponent),
+        data: {
+          title: 'Horario Semanal'
+        }
       }
 
     ]

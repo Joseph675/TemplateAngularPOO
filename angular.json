@@ -27,9 +27,13 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
+               "src/polyfills.ts", 
               "@angular/localize/init",
               "zone.js"
             ],
+
+            
+
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "preserveSymlinks": true,
@@ -96,6 +100,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": [
+              "src/polyfills.ts",
               "zone.js",
               "zone.js/testing"
             ],

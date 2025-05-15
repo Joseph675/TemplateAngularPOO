@@ -50,7 +50,7 @@
             <c-tabs-list variant="tabs">
               <button cTab itemKey="home"> Mis Cursos</button>
               <button cTab itemKey="profile">Informacion De Los Cursos</button>
-              <button cTab itemKey="contact">Contact</button>
+              <button cTab itemKey="contact">Ubicacion</button>
             </c-tabs-list>
             <c-tabs-content>
 
@@ -61,12 +61,13 @@
                     <c-card class="hola flex-fill d-flex flex-column">
                       <c-card-body class="flex-grow-1 d-flex flex-column justify-content-between">
                         <h5 cCardTitle>{{inscri.cursoNombre}} | <span>{{inscri.cursoPk}}</span></h5>
-                        <span>Semestre: {{inscri.cuatrimestre}}</span>
-                        <span>Profesor: {{inscri.profesorNombre}}</span>
+                        <span>Profesor: {{inscri.cursoProfesor}}</span>
                         <p cCardText>
                           {{inscri.cursoDescripcion}}
                         </p>
-
+                        <div class="d-grid gap-2 mt-auto">
+                          <button cButton color="light">{{inscri.cursoTipo}} </button>
+                        </div>
                       </c-card-body>
                     </c-card>
                   </div>
@@ -75,26 +76,52 @@
 
               </c-tab-panel>
               <c-tab-panel class="p-3" itemKey="profile">
-                <div class="col-md-4 d-flex" *ngFor="let inscri of inscripciones" style="padding-bottom: 12px;">
-                  <c-card class="hola flex-fill d-flex flex-column">
-                    <c-card-body class="flex-grow-1 d-flex flex-column justify-content-between">
-                      <h5 cCardTitle>{{inscri.cursoNombre}} | <span>{{inscri.cursoPk}}</span></h5>
-                      <span>Semestre: {{inscri.cuatrimestre}}</span>
-                      <span>Profesor: {{inscri.profesorNombre}}</span>
-                      <p cCardText>
-                        {{inscri.cursoDescripcion}}
-                      </p>
+                <div class="row">
+                  <div class="col-md-4 d-flex" *ngFor="let inscri of inscripciones" style="padding-bottom: 12px;">
+                    <c-card class="hola flex-fill d-flex flex-column">
+                      <c-card-body class="flex-grow-1 d-flex flex-column justify-content-between">
+                        <h5 cCardTitle>{{inscri.cursoNombre}} | <span>{{inscri.cursoPk}}</span></h5>
+                        <span>Ciclo Lectivo: {{inscri.cursoCicloLectivo}}</span>
 
-                    </c-card-body>
-                  </c-card>
+                        <span>Horas Semanales: {{inscri.cursohorasSemanales}}h</span>
+
+                        <span>Capacidad: {{inscri.cursoCapacidad}}</span>
+                        <span>Semestre: {{inscri.cursoSemestre}}</span>
+
+
+
+                        <div class="d-grid gap-2 mt-auto">
+                          <button cButton color="light">{{inscri.cursoTipo}} </button>
+                        </div>
+                      </c-card-body>
+                    </c-card>
+                  </div>
                 </div>
               </c-tab-panel>
               <c-tab-panel class="p-3" itemKey="contact">
-                <strong>Contact</strong> tab content
+                <div class="row">
+                  <div class="col-md-4 d-flex" *ngFor="let inscri of inscripciones" style="padding-bottom: 12px;">
+                    <c-card class="hola flex-fill d-flex flex-column">
+                      <c-card-body class="flex-grow-1 d-flex flex-column justify-content-between">
+                        <h5 cCardTitle>{{inscri.cursoNombre}} | <span>{{inscri.cursoPk}}</span></h5>
+                        <span>Enlace de Acceso: {{inscri.cursoEnlaceAcceso }}</span>
+                        <!-- Mostrar Aula si el curso es presencial -->
+                        <span *ngIf="inscri.cursoTipo === 'Presencial'">Aula: {{inscri.cursoAula}}</span>
+
+                        <!-- Mostrar mensaje diferente si el curso es virtual -->
+                        <span *ngIf="inscri.cursoTipo === 'Virtual'">Plataforma: {{inscri.cursoPlataforma}}</span>
+
+
+                        <div class="d-grid gap-2 mt-auto">
+                          <button cButton color="light">{{inscri.cursoTipo}} </button>
+                        </div>
+                      </c-card-body>
+                    </c-card>
+                  </div>
+                </div>
+
               </c-tab-panel>
-              <c-tab-panel class="p-3" itemKey="disabled">
-                <strong>Disabled</strong> tab content
-              </c-tab-panel>
+
             </c-tabs-content>
           </c-tabs>
 

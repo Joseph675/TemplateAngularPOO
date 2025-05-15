@@ -70,14 +70,6 @@ export const routes: Routes = [
         data: {
           title: 'Secciones'
         }
-      },
-
-      {
-        path: 'asistencias-form',
-        loadComponent: () => import('./asistencias/asistencias.component').then(m => m.AsistenciasComponent),
-        data: {
-          title: 'Asistencias'
-        }
       }
     ]
   }

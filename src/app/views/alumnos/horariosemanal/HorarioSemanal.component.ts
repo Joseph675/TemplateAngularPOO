@@ -31,9 +31,9 @@ import { cilArrowRight, cilChartPie, cilUser, cilAddressBook,cilHome } from '@co
 import { IconDirective  } from '@coreui/icons-angular';
 
 @Component({
-  selector: 'app-mis_inscripciones',
-  templateUrl: './mis_inscripciones.component.html',
-  styleUrls: ['./mis_inscripciones.component.scss'],
+  selector: 'app-horariosemanal',
+  templateUrl: './HorarioSemanal.component.html',
+  styleUrls: ['./HorarioSemanal.component.scss'],
   providers: [provideNativeDateAdapter()],
   imports: [
     Tabs2Module,
@@ -56,7 +56,7 @@ import { IconDirective  } from '@coreui/icons-angular';
   standalone: true
 })
 
-export class MisInscripcionesComponent implements OnInit {
+export class HorarioSemanalComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';
@@ -80,6 +80,7 @@ export class MisInscripcionesComponent implements OnInit {
   userCarrera: string = '';
   userCarreraNUM: string = '';
   inscripciones: any[] = []; // Cambiado a any[] para evitar errores de tipo
+  sesiones: any[] = []; // Cambiado a any[] para evitar errores de tipo
 
   selectedFaculty: string = '';
   selectedCarrera: string = '';
@@ -103,8 +104,12 @@ export class MisInscripcionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    Promise.all([this.loadFacultades(), this.loadCarreras(), this.loadMaterias(), this.loadCarrerasMaterias(),this.loadUsuarios(),this.loadCursos(), ]).then(() => {
-      this.loadInscripciones(); // Cargar inscripciones al inicio
+    Promise.all([this.loadFacultades(), this.loadCarreras(), this.loadMaterias(), this.loadCarrerasMaterias(),this.loadUsuarios(),this.loadCursos(), ])
+   .then(() => {
+      this.loadInscripciones(); // Cargar inscripciones primero
+    })
+    .then(() => {
+      this.loadSesiones(); // Cargar sesiones después de las inscripciones
     });
 
     const user = this.authService.getUser(); // Recuperar el usuario desde localStorage
@@ -125,11 +130,7 @@ export class MisInscripcionesComponent implements OnInit {
       this.userCarrera = carrera ? carrera.nombre : 'Carrera no encontrada';
     });
 
-    this.myForm = this.fb.group({
-      cursoPk: ['', Validators.required],
-      alumnoId: [this.useridUsuUni, Validators.required],
-      estado: ['Activo', Validators.required]
-    });
+   
 
   }
 
@@ -231,6 +232,7 @@ export class MisInscripcionesComponent implements OnInit {
       (data) => {
 
         console.log('Cursos disponibles:', data);
+        // Filtrar los cursos para que solo se incluyan los de la carrera del usuario
         this.cursos = data.filter(curso => {
           const carreraMateria = this.carrerasMaterias.find(cm => cm.materiaPk === curso.materiaPk);
 
@@ -251,7 +253,6 @@ export class MisInscripcionesComponent implements OnInit {
           this.cursos = this.cursos.map(curso => {
             const materia = this.materias.find(m => m.materiaPk === curso.materiaPk);
             const profesor = this.usuarios.find(u => u.idUsuUni === curso.profesorId);
-
 
             return {
               ...curso,
@@ -326,6 +327,39 @@ export class MisInscripcionesComponent implements OnInit {
       }
     );
   }
+
+  loadSesiones(): void {
+  this.http.get<any[]>('http://localhost:8080/api/sesiones').subscribe(
+    (data) => {
+      console.log('Todas las sesiones:', data);
+
+      // Filtrar las sesiones para incluir solo las de los cursos en los que el alumno está inscrito
+      const cursosInscritos = this.inscripciones.map(inscri => inscri.cursoPk); // Obtener los IDs de los cursos inscritos
+      this.sesiones = data.filter(sesion => cursosInscritos.includes(sesion.cursoPk)).map(sesion => {
+        // Buscar el curso correspondiente
+        const curso = this.cursos.find(c => c.cursoPk === sesion.cursoPk);
+
+        // Obtener materiaPk y materiaNombre del curso
+        const cursoPk = curso ? curso.cursoPk : 'Sin materiaPk';
+        const materiaNombre = curso ? curso.materiaNombre : 'Sin materiaNombre';
+        const cursoTipo = curso ? curso.tipoCurso : 'Sin tipoCurso';
+
+        // Combinar los datos
+        return {
+          ...sesion,
+          cursoPk,
+          materiaNombre,
+          cursoTipo
+        };
+      });
+
+      console.log('Sesiones filtradas con datos relacionados:', this.sesiones);
+    },
+    (error) => {
+      console.error('Error al cargar las sesiones:', error);
+    }
+  );
+}
 
 
   
