@@ -31,9 +31,9 @@ import { cilArrowRight, cilChartPie, cilUser, cilAddressBook, cilHome } from '@c
 import { IconDirective } from '@coreui/icons-angular';
 
 @Component({
-  selector: 'app-registrarasistenciasprofe',
-  templateUrl: './registrarasistenciasprofe.component.html',
-  styleUrls: ['./registrarasistenciasprofe.component.scss'],
+  selector: 'app-vercursosprofe',
+  templateUrl: './vercursosprofe.component.html',
+  styleUrls: ['./vercursosprofe.component.scss'],
   providers: [provideNativeDateAdapter()],
   imports: [
     Tabs2Module,
@@ -56,7 +56,7 @@ import { IconDirective } from '@coreui/icons-angular';
   standalone: true
 })
 
-export class RegistrarAsistenciasProfeComponent implements OnInit {
+export class VerCursosProfeComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';
@@ -98,6 +98,9 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
   searchCursoTerm: string = '';
   filteredCursos: any[] = []; // Cambiado a any[] para evitar errores de tipo
 
+  asistencias: any[] = [];
+  asistenciasEnriquecidas: any[] = [];
+
   sesionSeleccionada: any = null;
   icons = { cilChartPie, cilArrowRight, cilUser, cilAddressBook };
 
@@ -115,8 +118,9 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
       this.loadCarrerasMaterias(),
       this.loadUsuarios(),
       this.loadCursos(),
+      this.loadSesiones()
     ]).then(() => {
-      this.loadSesiones(); // Cargar sesiones después de los cursos
+      this.loadAsistencias(); // Cargar sesiones después de los cursos
     });
 
     // Obtener usuario actual
@@ -153,7 +157,7 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
       this.sesionSeleccionada = this.sesiones.find(s => s.sesionId == sesionId) || null;
     });
 
-    // Suscripción al lector   para registrar asistencia automáticamente
+    // Suscripción al lector RFID para registrar asistencia automáticamente
     this.rfid.uid$.subscribe(uid => {
       if (!uid || !this.sesionSeleccionada) return;
 
@@ -393,6 +397,37 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
     );
   }
 
+loadAsistencias(): void {
+  this.http.get<any[]>('http://localhost:8080/api/asistencias').subscribe(
+    (data) => {
+      this.asistencias = data;
+      this.asistenciasEnriquecidas = this.asistencias.map(asistencia => {
+        // Buscar usuario por UID
+        const usuario = this.usuarios.find(u => u.uid === asistencia.alumnoId);
+        // Buscar sesión
+        const sesion = this.sesiones.find(s => s.sesionId === asistencia.sesionId);
+        // Buscar curso
+        const curso = sesion ? this.cursos.find(c => c.cursoPk === sesion.cursoPk) : null;
+        // Buscar materia
+        const materia = curso ? this.materias.find(m => m.materiaPk === curso.materiaPk) : null;
 
+        console.log('Usuario encontrado:', this.usuarios);
+        return {
+          ...asistencia,
+          alumnoNombre: usuario ? usuario.nombre : 'Desconocido',
+          materiaNombre: materia ? materia.nombre : 'Sin materia',
+          fecha: sesion ? sesion.fecha : 'Sin fecha'
+        };
+
+
+      });
+      console.log('Todas las asistencias:', this.asistenciasEnriquecidas);
+
+    },
+    (error) => {
+      console.error('Error al cargar las asistencias:', error);
+    }
+  );
+}
 
 }

@@ -31,9 +31,9 @@ import { cilArrowRight, cilChartPie, cilUser, cilAddressBook, cilHome } from '@c
 import { IconDirective } from '@coreui/icons-angular';
 
 @Component({
-  selector: 'app-registrarasistenciasprofe',
-  templateUrl: './registrarasistenciasprofe.component.html',
-  styleUrls: ['./registrarasistenciasprofe.component.scss'],
+  selector: 'app-versistenciasprofe',
+  templateUrl: './versistenciasprofe.component.html',
+  styleUrls: ['./versistenciasprofe.component.scss'],
   providers: [provideNativeDateAdapter()],
   imports: [
     Tabs2Module,
@@ -56,7 +56,7 @@ import { IconDirective } from '@coreui/icons-angular';
   standalone: true
 })
 
-export class RegistrarAsistenciasProfeComponent implements OnInit {
+export class VerAsistenciasProfeComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
   toastMessage: string = '';
@@ -98,6 +98,13 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
   searchCursoTerm: string = '';
   filteredCursos: any[] = []; // Cambiado a any[] para evitar errores de tipo
 
+  asistencias: any[] = [];
+  asistenciasEnriquecidas: any[] = [];
+
+  searchText: string = '';
+  asistenciasFiltradas: any[] = [];
+
+
   sesionSeleccionada: any = null;
   icons = { cilChartPie, cilArrowRight, cilUser, cilAddressBook };
 
@@ -115,8 +122,9 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
       this.loadCarrerasMaterias(),
       this.loadUsuarios(),
       this.loadCursos(),
+      this.loadSesiones()
     ]).then(() => {
-      this.loadSesiones(); // Cargar sesiones después de los cursos
+      this.loadAsistencias(); // Cargar sesiones después de los cursos
     });
 
     // Obtener usuario actual
@@ -137,54 +145,18 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
       this.userCarrera = carrera ? carrera.nombre : 'Carrera no encontrada';
     });
 
-    // Inicializar formulario reactivo
     this.myForm = this.fb.group({
-      cursoSelect: ['', Validators.required], // <--- agrega este control
-      sesionId: ['', Validators.required],
-      alumnoId: ['', Validators.required],
-      observaciones: [''],
-      registradoPor: [this.useridUsuUni, Validators.required],
-      presente: [true],
-      justificada: [true],
+      alumnoId: [''],
+      // ...otros campos...
     });
 
-    // Actualizar la sesión seleccionada cuando cambia el select
-    this.myForm.get('sesionId')!.valueChanges.subscribe((sesionId: any) => {
-      this.sesionSeleccionada = this.sesiones.find(s => s.sesionId == sesionId) || null;
-    });
 
-    // Suscripción al lector   para registrar asistencia automáticamente
+    // Suscripción al lector RFID para registrar asistencia automáticamente
     this.rfid.uid$.subscribe(uid => {
-      if (!uid || !this.sesionSeleccionada) return;
-
+      if (!uid) return;
       this.myForm.patchValue({ alumnoId: uid });
-
-      const asistencia = {
-        alumnoId: uid,
-        sesionId: this.sesionSeleccionada.sesionId,
-        cursoPk: this.sesionSeleccionada.cursoPk,
-        registradoPor: this.useridUsuUni,
-        observaciones: this.myForm.value.observaciones,
-        presente: this.myForm.value.presente,
-        justificada: this.myForm.value.justificada,
-      };
-
-      console.log('Asistencia a registrar:', asistencia);
-
-      this.http.post('http://localhost:8080/api/asistencias', asistencia)
-        .subscribe({
-          next: () => {
-            this.toastType = 'success';
-            this.toastMessage = `Asistencia registrada: ${uid}`;
-            this.showToast = true;
-            this.myForm.patchValue({ alumnoId: null });
-          },
-          error: () => {
-            this.toastType = 'error';
-            this.toastMessage = `Error al registrar: ${uid}`;
-            this.showToast = true;
-          }
-        });
+      this.searchText = uid;         // <-- Esto pone el UID en el input de búsqueda
+      this.filtrarAsistencias();     // <-- Esto actualiza la tabla filtrada
     });
   }
 
@@ -393,6 +365,51 @@ export class RegistrarAsistenciasProfeComponent implements OnInit {
     );
   }
 
+  loadAsistencias(): void {
+    this.http.get<any[]>('http://localhost:8080/api/asistencias').subscribe(
+      (data) => {
+        this.asistencias = data;
+        this.asistenciasEnriquecidas = this.asistencias.map(asistencia => {
+          // Buscar usuario por UID
+          const usuario = this.usuarios.find(u => u.uid === asistencia.alumnoId);
+          // Buscar sesión
+          const sesion = this.sesiones.find(s => s.sesionId === asistencia.sesionId);
+          // Buscar curso
+          const curso = sesion ? this.cursos.find(c => c.cursoPk === sesion.cursoPk) : null;
+          // Buscar materia
+          const materia = curso ? this.materias.find(m => m.materiaPk === curso.materiaPk) : null;
 
+          console.log('Usuario encontrado:', this.usuarios);
+          return {
+            ...asistencia,
+            alumnoidusu: usuario ? usuario.idUsuUni : 'Desconocido',
+            alumnouid: usuario ? usuario.uid : 'Desconocido',
+            alumnoNombre: usuario ? usuario.nombre : 'Desconocido',
+            materiaNombre: materia ? materia.nombre : 'Sin materia',
+            fecha: sesion ? sesion.fecha : 'Sin fecha'
+          };
+
+
+        });
+        console.log('Todas las asistencias:', this.asistenciasEnriquecidas);
+        this.filtrarAsistencias(); // <-- filtra al cargar
+      },
+      (error) => {
+        console.error('Error al cargar las asistencias:', error);
+      }
+    );
+  }
+
+  filtrarAsistencias(): void {
+    const texto = this.searchText ? this.searchText.toLowerCase() : '';
+    this.asistenciasFiltradas = this.asistenciasEnriquecidas.filter(a =>
+      (!texto) ||
+      (a.alumnoNombre && a.alumnoNombre.toLowerCase().includes(texto)) ||
+      (a.materiaNombre && a.materiaNombre.toLowerCase().includes(texto)) ||
+      (a.observaciones && a.observaciones.toLowerCase().includes(texto)) ||
+      (a.alumnoidusu && a.alumnoidusu.toString().toLowerCase().includes(texto)) ||
+      (a.alumnouid && a.alumnouid.toString().toLowerCase().includes(texto))
+    );
+  }
 
 }

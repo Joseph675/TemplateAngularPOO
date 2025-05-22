@@ -2,25 +2,26 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective} from '@coreui/angular';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, FormControlDirective, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective } from '@coreui/angular';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
-interface Faculty {
-  name: string;
-  carreras: string[];
-}
+import { RfidService } from '../../../services/rfid.service';
+
+
+
 
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
   providers: [provideNativeDateAdapter()],
   styleUrls: ['./usuarios.component.scss'],
-  imports: [MatDatepickerModule,MatInputModule,MatFormFieldModule ,CommonModule,HttpClientModule,RowComponent,ColComponent,TextColorDirective,CardComponent,CardHeaderComponent,CardBodyComponent,FormControlDirective,ReactiveFormsModule,FormsModule,FormDirective,FormLabelDirective,FormSelectDirective,FormCheckComponent,FormCheckInputDirective,FormCheckLabelDirective,ButtonDirective,ColDirective,InputGroupComponent,InputGroupTextDirective],
-  standalone: true})
-  
+  imports: [MatDatepickerModule, MatInputModule, MatFormFieldModule, CommonModule, HttpClientModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, FormControlDirective, ReactiveFormsModule, FormsModule, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective],
+  standalone: true
+})
+
 export class UsuariosComponent implements OnInit {
   myForm!: FormGroup;
   showToast: boolean = false;
@@ -31,11 +32,12 @@ export class UsuariosComponent implements OnInit {
   carreras: any[] = []; // Carreras disponibles
   filteredCarreras: any[] = []; // Carreras filtradas según la facultad seleccionada
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {
+  constructor(private http: HttpClient, private fb: FormBuilder, private rfid: RfidService) {
     // Se incluye también el campo "area" en el formulario
     this.myForm = this.fb.group({
       tipo: ['', Validators.required],
       idUsuUni: ['', Validators.required],
+      uid: ['', Validators.required],
       cedula: ['', Validators.required],
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -52,6 +54,12 @@ export class UsuariosComponent implements OnInit {
   ngOnInit(): void {
     this.loadFacultades();
     this.loadCarreras();
+
+    this.rfid.uid$.subscribe(uid => {
+      // 1. Actualiza el campo alumnoId del formulario con el UID recibido
+      this.myForm.patchValue({ uid: uid });
+    });
+
   }
 
   registrar(): void {
@@ -63,6 +71,7 @@ export class UsuariosComponent implements OnInit {
         usuarioDTO: {
           tipo: formData.tipo,
           idUsuUni: formData.idUsuUni,
+          uid: formData.uid,
           cedula: formData.cedula,
           nombre: formData.nombre,
           email: formData.email,
@@ -75,9 +84,9 @@ export class UsuariosComponent implements OnInit {
         },
         password: formData.password
       };
-  
+
       console.log('Payload enviado:', payload);
-  
+
       // Enviar el payload al backend
       this.http.post('http://localhost:8080/api/usuarios', payload).subscribe(
         (response) => {
@@ -85,11 +94,12 @@ export class UsuariosComponent implements OnInit {
           this.toastType = 'success';
           this.toastMessage = 'Usuario registrado exitosamente!';
           this.showToast = true;
-  
+
           // Reiniciar el formulario con valores iniciales
           this.myForm.reset({
             tipo: '',
             idUsuUni: '',
+            uid: '',
             cedula: '',
             nombre: '',
             email: '',
@@ -101,7 +111,7 @@ export class UsuariosComponent implements OnInit {
             password: '',
             activo: true
           });
-  
+
           setTimeout(() => (this.showToast = false), 3000);
         },
         (error) => {
@@ -146,11 +156,11 @@ export class UsuariosComponent implements OnInit {
 
   onFacultadChange(event: Event): void {
     const selectedFacultadId = (event.target as HTMLSelectElement).value;
-  
+
     console.log('Facultad seleccionada:', selectedFacultadId); // Verifica el ID de la facultad seleccionada
     // Filtrar las carreras según la facultad seleccionada
     this.filteredCarreras = this.carreras.filter(carrera => carrera.facultadId === parseInt(selectedFacultadId, 10));
-  
+
     console.log('Carreras filtradas:', this.filteredCarreras); // Verifica las carreras filtradas
   }
 }

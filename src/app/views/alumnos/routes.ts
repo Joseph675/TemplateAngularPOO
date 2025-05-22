@@ -33,6 +33,14 @@ export const routes: Routes = [
           title: 'Horario Semanal'
         }
       }
+      ,
+      {
+        path: 'verasistenciasalumno',
+        loadComponent: () => import('./verasistenciasalumno/verasistenciasalumno.component').then(m => m.VerAsistenciasAlumnoComponent),
+        data: {
+          title: 'Mis Asistencias'
+        }
+      }
 
     ]
   }

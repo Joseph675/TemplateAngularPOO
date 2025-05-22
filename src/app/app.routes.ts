@@ -59,6 +59,12 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: { allowedRoles: ["Profesor"] }
       },
+       {
+        path: 'vercursos',
+        loadChildren: () => import('./views/cursosprofesor/routes').then((m) => m.routes),
+        canActivate: [AuthGuard],
+        data: { allowedRoles: ["Profesor"] }
+      },
       {
         path: 'icons',
         loadChildren: () => import('./views/icons/routes').then((m) => m.routes),

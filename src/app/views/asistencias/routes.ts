@@ -20,8 +20,8 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'misasistencias',
-        loadComponent: () => import('./verasistenciasalumno/verasistenciasalumno.component').then(m => m.VerAsistenciasAlumnoComponent),
+        path: 'misasistenciasprofe',
+        loadComponent: () => import('./versistenciasprofe/versistenciasprofe.component').then(m => m.VerAsistenciasProfeComponent),
         data: {
           title: 'Mis Asistencias'
         }

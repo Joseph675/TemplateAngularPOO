@@ -14,15 +14,6 @@
    
 
     <c-header-nav class="d-none d-md-flex ms-auto ">
-      <a cNavLink>
-        <svg cIcon class="my-1" name="cilBell" size="lg"></svg>
-      </a>
-      <a cNavLink>
-        <svg cIcon class="my-1" name="cilList" size="lg"></svg>
-      </a>
-      <a cNavLink>
-        <svg cIcon class="my-1" name="cilEnvelopeOpen" size="lg"></svg>
-      </a>
     </c-header-nav>
 
     <c-header-nav class="ms-auto ms-md-0">
@@ -52,54 +43,18 @@
       <c-avatar
         shape="rounded-1"
         [size]="'md'"
-        src="./assets/images/avatars/8.jpg"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
         status="success"
         textColor="primary"
         alt="User avatar"
       />
     </button>
     <ul cDropdownMenu class="pt-0 w-auto">
-      <h6 class="text-center py-2">{{ userName }}</h6>
+      <h6 class="text-center py-2" style="margin-top: 8px;">{{ userName }}</h6>
       <li>
-        <h6 cDropdownHeader class="bg-body-secondary text-body-secondary fw-semibold py-2 rounded-top">
-          Account
-        </h6>
+        <hr cDropdownDivider />
       </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilBell"></svg>
-          Updates
-          <c-badge class="ms-2 float-end" color="info"> 42</c-badge>
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="/apps/email/inbox">
-          <svg cIcon class="me-2" name="cilEnvelopeOpen"></svg>
-          Messages
-          <c-badge class="ms-2 float-end" color="success">
-            42
-          </c-badge>
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilTask"></svg>
-          Tasks
-          <c-badge class="ms-2 float-end" color="danger"> 42</c-badge>
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilCommentSquare"></svg>
-          Comments
-          <c-badge class="ms-auto" color="warning"> 42</c-badge>
-        </a>
-      </li>
-      <li>
-        <h6 cDropdownHeader class="bg-body-secondary text-body-secondary fw-semibold py-2">
-          Settings
-        </h6>
-      </li>
+     
       <li></li>
       <li>
         <a cDropdownItem routerLink="">
@@ -107,42 +62,15 @@
           Profile
         </a>
       </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilSettings"></svg>
-          Settings
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilCreditCard"></svg>
-          Payments
-          <c-badge class="ms-2 float-end" color="secondary">
-            42
-          </c-badge>
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilFile"></svg>
-          Projects
-          <c-badge class="ms-2 float-end" color="primary">
-            42
-          </c-badge>
-        </a>
-      </li>
+      
+      
       <li>
         <hr cDropdownDivider />
       </li>
+     
       <li>
         <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilLockLocked"></svg>
-          Lock Account
-        </a>
-      </li>
-      <li>
-        <a cDropdownItem routerLink="">
-          <svg cIcon class="me-2" name="cilAccountLogout"></svg>
+          <svg cIcon class="me-2" name="cilAccountLogout" (click)="logout()"></svg>
           Logout
         </a>
       </li>
